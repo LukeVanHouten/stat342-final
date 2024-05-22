@@ -1,5 +1,5 @@
 ---
-title: "Final Project"
+title: "Placebo-Controlled Efficacy Analysis of the COVID-19 Vaccine"
 author: "Oliver Brown, Josie Czeskleba, Luke VanHouten"
 subtitle: "Spring 2024"
 header-includes:
@@ -14,3 +14,21 @@ output: pdf_document
 ```
 
 # Abstract
+
+# Keywords
+
+Efficacy, Inference, COVID-19, Statistics, Estimators
+
+# Introduction
+
+In this project, we
+
+# Statistical Methods
+
+# Results
+
+# Conclusion
+
+# References
+
+# Appendix
