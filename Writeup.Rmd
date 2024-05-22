@@ -1,6 +1,6 @@
 ---
 title: "Final Project"
-author: "Oliver Brown, Josie Czekleba, Luke VanHouten"
+author: "Oliver Brown, Josie Czeskleba, Luke VanHouten"
 subtitle: "Spring 2024"
 header-includes:
     - \usepackage{amsmath}
