@@ -1,0 +1,16 @@
+---
+title: "Final Project"
+author: "Oliver Brown, Josie Czekleba, Luke VanHouten"
+subtitle: "Spring 2024"
+header-includes:
+    - \usepackage{amsmath}
+    - \usepackage{amsthm}
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+#Use this code chunk to include libraries, and set global options.
+
+```
+
+# Abstract
