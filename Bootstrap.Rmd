@@ -9,10 +9,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 library(boot)
 library(readr)
-<<<<<<< HEAD
 library(tidyverse)
-=======
->>>>>>> 457cec99ecca1b17c9bdeb91dac2646b43d4610a
+
 ```
 
 ```{r}
@@ -72,13 +70,13 @@ for (i in 1:n_bootstrap) {
   ci_data$Lower[i] <- quantile(sample_diffs, 0.025)
   ci_data$Upper[i] <- quantile(sample_diffs, 0.975)
 }
+
+print(overall_ci)
 ```
 
 ```{r}
-# Subset for plotting (e.g., plot every 500th iteration)
 plot_data <- ci_data[seq(1, n_bootstrap, by = 200), ]
 
-# Plot horizontal segmented line graph with overall confidence interval
 ggplot(plot_data, aes(y = Iteration)) +
   geom_vline(xintercept = observed_diff, linetype = "solid", color = "red") + 
   geom_segment(aes(yend = Iteration, x = Lower, xend = Upper), color = "blue") +
@@ -90,8 +88,7 @@ ggplot(plot_data, aes(y = Iteration)) +
   scale_x_continuous(limits = c(0.007, 0.011), 
                      breaks = seq(0.007, 0.011, by = 0.001)) +
   theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5), # Center the plot title
-        axis.text.y = element_text(hjust = 1)) # Angle the y-axis labels for readability
-  
+  theme(plot.title = element_text(hjust = 0.5), 
+        axis.text.y = element_text(hjust = 1))
 ```
 
