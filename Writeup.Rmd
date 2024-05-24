@@ -1,0 +1,40 @@
+---
+title: "Placebo-Controlled Efficacy Analysis of the COVID-19 Vaccine"
+author: "Oliver Brown, Josie Czeskleba, Luke VanHouten"
+subtitle: "Spring 2024"
+header-includes:
+    - \usepackage{amsmath}
+    - \usepackage{amsthm}
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+#Use this code chunk to include libraries, and set global options.
+
+```
+
+# Abstract
+
+# Keywords
+
+Efficacy, Inference, COVID-19, Statistics, Estimators
+
+# Introduction
+
+In this project, we
+
+# Statistical Methods
+
+### Maximum Likelihood Estimator
+
+### Bootstrap
+
+
+
+# Results
+
+# Conclusion
+
+# References
+
+# Appendix
