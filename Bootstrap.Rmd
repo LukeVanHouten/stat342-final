@@ -29,12 +29,13 @@ placebo <- data %>%
 
 prop_vaccine <- vaccine$COVID[1] / vaccine$No_COVID[1]
 prop_placebo <- placebo$COVID[1] / placebo$No_COVID[1]
-observed_diff <- prop_placebo - prop_vaccine
 
 n_vaccine <- vaccine$COVID + vaccine$No_COVID
 n_placebo <- placebo$COVID + placebo$No_COVID
 
-observed_diff <- prop_placebo - prop_vaccine
+observed_pi <- prop_vaccine/(prop_vaccine + prop_placebo)
+
+observed_psi <- (1 - 2*observed_pi)/(1 - observed_pi)
 
 ```
 
@@ -42,7 +43,7 @@ observed_diff <- prop_placebo - prop_vaccine
 ```{r}
 
 n_bootstrap <- 10000
-bootstrap_diffs <- numeric(n_bootstrap)
+bootstrap_psis <- numeric(n_bootstrap)
 set.seed(123)
 
 for (i in 1:n_bootstrap) {
@@ -52,13 +53,15 @@ for (i in 1:n_bootstrap) {
   prop_vaccine_boot <- mean(vaccine_sample)
   prop_placebo_boot <- mean(placebo_sample)
   
-  bootstrap_diffs[i] <- prop_placebo_boot - prop_vaccine_boot
+  bootstrap_pi <- prop_vaccine_boot/(prop_vaccine_boot + prop_placebo_boot)
+  
+  bootstrap_psis[i] <- (1 - 2*bootstrap_pi)/(1 - bootstrap_pi)
 }
 
-# Calculate overall confidence interval
-overall_ci <- quantile(bootstrap_diffs, c(0.025, 0.975))
+hist(bootstrap_psis)
 
-# Calculate confidence intervals for each bootstrap sample
+overall_ci <- quantile(bootstrap_psis, c(0.025, 0.975))
+
 ci_data <- data.frame(
   Iteration = 1:n_bootstrap,
   Lower = numeric(n_bootstrap),
@@ -66,9 +69,9 @@ ci_data <- data.frame(
 )
 
 for (i in 1:n_bootstrap) {
-  sample_diffs <- sample(bootstrap_diffs, n_bootstrap, replace = TRUE)
-  ci_data$Lower[i] <- quantile(sample_diffs, 0.025)
-  ci_data$Upper[i] <- quantile(sample_diffs, 0.975)
+  sample_psis <- sample(bootstrap_psis, n_bootstrap, replace = TRUE)
+  ci_data$Lower[i] <- quantile(sample_psis, 0.025)
+  ci_data$Upper[i] <- quantile(sample_psis, 0.975)
 }
 
 print(overall_ci)
@@ -78,15 +81,13 @@ print(overall_ci)
 plot_data <- ci_data[seq(1, n_bootstrap, by = 200), ]
 
 ggplot(plot_data, aes(y = Iteration)) +
-  geom_vline(xintercept = observed_diff, linetype = "solid", color = "red") + 
+  geom_vline(xintercept = observed_psi, linetype = "solid", color = "red") + 
   geom_segment(aes(yend = Iteration, x = Lower, xend = Upper), color = "blue") +
   geom_vline(xintercept = overall_ci[1], linetype = "dashed", color = "red") +
   geom_vline(xintercept = overall_ci[2], linetype = "dashed", color = "red") +
   labs(title = "Confidence Intervals of Bootstrap Samples",
        y = "Iteration",
        x = "Confidence Interval") +
-  scale_x_continuous(limits = c(0.007, 0.011), 
-                     breaks = seq(0.007, 0.011, by = 0.001)) +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5), 
         axis.text.y = element_text(hjust = 1))
