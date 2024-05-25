@@ -1,0 +1,42 @@
+---
+title: "Visualizations"
+author: "Josie Czeskleba"
+date: "2024-05-24"
+output: pdf_document
+---
+
+
+```{r setup, echo = FALSE, include = FALSE}
+library(tidyverse)
+library(reshape2)
+```
+
+
+```{r read in data, echo = FALSE, show_col_types = FALSE, include = FALSE}
+data <- read_csv("data.csv")
+
+data_melted <- melt(data, id.vars = "Test")
+```
+
+```{r stacked barplot, echo = FALSE}
+
+ggplot(data_melted, aes(x = Test, y = value, fill = variable)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Test", y = "Number of Participants", 
+       title = "COVID Infection for Vaccine and Placebo Groups") 
+```
+
+
+```{r faceted barplot, echo = FALSE}
+data <- read_csv("data.csv")
+
+data_melted <- melt(data, id.vars = "Test")
+
+
+ggplot(data_melted, aes(x = Test, y = value)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ variable, scales = "free_y") +
+  labs(x = "Test", y = "Number of Participants", 
+       title = "COVID Infection for Vaccine and Placebo Groups")
+```
+
