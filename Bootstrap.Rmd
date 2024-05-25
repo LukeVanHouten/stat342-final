@@ -5,7 +5,7 @@ date: "2024-05-22"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, fig.width = 8, fig.height = 6)
 
 library(boot)
 library(readr)
@@ -27,11 +27,11 @@ vaccine <- data %>%
 placebo <- data %>%
   filter(Test == "Placebo")
 
-prop_vaccine <- vaccine$COVID[1] / vaccine$No_COVID[1]
-prop_placebo <- placebo$COVID[1] / placebo$No_COVID[1]
-
 n_vaccine <- vaccine$COVID + vaccine$No_COVID
 n_placebo <- placebo$COVID + placebo$No_COVID
+
+prop_vaccine <- vaccine$COVID[1] / n_vaccine
+prop_placebo <- placebo$COVID[1] / n_placebo
 
 observed_pi <- prop_vaccine/(prop_vaccine + prop_placebo)
 
@@ -53,12 +53,27 @@ for (i in 1:n_bootstrap) {
   prop_vaccine_boot <- mean(vaccine_sample)
   prop_placebo_boot <- mean(placebo_sample)
   
-  bootstrap_pi <- prop_vaccine_boot/(prop_vaccine_boot + prop_placebo_boot)
+  bootstrap_pi <- prop_vaccine_boot / (prop_vaccine_boot + prop_placebo_boot)
   
-  bootstrap_psis[i] <- (1 - 2*bootstrap_pi)/(1 - bootstrap_pi)
+  bootstrap_psis[i] <- (1 - 2 * bootstrap_pi) / (1 - bootstrap_pi)
 }
+```
 
-hist(bootstrap_psis)
+```{r}
+
+bootstrap_df <- data.frame(psi = bootstrap_psis)
+
+ggplot(bootstrap_df, aes(x = psi)) +
+  geom_histogram(binwidth = 0.007, fill = "darkorchid1", color = "black") +
+  labs(title = "Histogram of Bootstrap Psi Values", x = "Psi", y = "Frequency") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+```
+
+
+
+```{r}
 
 overall_ci <- quantile(bootstrap_psis, c(0.025, 0.975))
 
@@ -75,21 +90,28 @@ for (i in 1:n_bootstrap) {
 }
 
 print(overall_ci)
+
+
 ```
 
 ```{r}
-plot_data <- ci_data[seq(1, n_bootstrap, by = 200), ]
+plot_data <- ci_data[seq(1, n_bootstrap, by = 300), ]
 
 ggplot(plot_data, aes(y = Iteration)) +
   geom_vline(xintercept = observed_psi, linetype = "solid", color = "red") + 
-  geom_segment(aes(yend = Iteration, x = Lower, xend = Upper), color = "blue") +
+  geom_text(aes(x = observed_psi-0.0125, y = max(Iteration) + 300, label = "Observed Psi"), color = "red", hjust = -0.05) +
+  geom_segment(aes(yend = Iteration, x = Lower, xend = Upper), color = "navy") +
   geom_vline(xintercept = overall_ci[1], linetype = "dashed", color = "red") +
   geom_vline(xintercept = overall_ci[2], linetype = "dashed", color = "red") +
+  geom_text(aes(x = overall_ci[1] + 0.0129, y = max(Iteration) + 300, label = "Lower Bound"), color = "red", hjust = 1.1) +
+  geom_text(aes(x = overall_ci[2] - 0.0129, y = max(Iteration) + 300, label = "Upper Bound"), color = "red", hjust = -0.1) +
   labs(title = "Confidence Intervals of Bootstrap Samples",
        y = "Iteration",
-       x = "Confidence Interval") +
+       x = "Confidence Interval",
+       subtitle = "Each line segment represents a 95% confidence interval for a bootstrap sample") +
   theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5), 
+  theme(plot.title = element_text(hjust = 0.5),
+        plot.subtitle = element_text(hjust = 0.5, size = 10),
         axis.text.y = element_text(hjust = 1))
 ```
 

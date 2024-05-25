@@ -1,0 +1,43 @@
+```{r}
+
+library(tidyverse)
+library(maxLik)
+library(fastR2)
+
+options(scipen = 999)
+
+```
+
+```{r}
+
+logLik <- function(psi, t, n) {
+  return(t*log((1 - psi)/(2 - psi)) + (n - t)*log(1 - ((1 - psi)/(2 - psi))))
+}
+
+
+result <- maxLik(logLik, start = 0, method = "NR", tol = 1e-4, t = 8, n = n_vaccine + n_placebo)
+
+summary(result)
+
+```
+
+```{r}
+
+library(maxLik)
+
+logLik <- function(psi, t, n) {
+  return(t * log((1 - psi) / (2 - psi)) + (n - t) * log(1 - ((1 - psi) / (2 - psi))))
+}
+
+logLikWrapper <- function(params) {
+  psi <- params[1]
+  t <- 8
+  n <- n_vaccine + n_placebo
+  return(logLik(psi, t, n))
+}
+
+result <- maxLik(logLikWrapper, start = c(0.5), method = "NR", tol = 1e-4)
+
+summary(result)
+
+```
