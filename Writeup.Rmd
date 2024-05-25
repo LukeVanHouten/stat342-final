@@ -25,6 +25,10 @@ In this project, we
 
 # Statistical Methods
 
+### Maximum Likelihood Estimator
+
+### Bootstrap
+
 # Results
 
 # Conclusion
