@@ -5,12 +5,17 @@ subtitle: "Spring 2024"
 header-includes:
     - \usepackage{amsmath}
     - \usepackage{amsthm}
+bibliography: refs.bib
+nocite: '@*'
 output: pdf_document
 ---
 
 ```{r setup, include=FALSE}
 #Use this code chunk to include libraries, and set global options.
-
+knitr::opts_chunk$set(warning = FALSE)
+library(tidyverse)
+library(maxLik)
+library(reshape2)
 ```
 
 # Abstract
@@ -25,16 +30,87 @@ In this project, we
 
 # Statistical Methods
 
-### Maximum Likelihood Estimator
+We denote the random variable $T$ as the number of vaccinated individuals from the 170 COVID cases.
 
-### Bootstrap
+\[ T \sim Binom(n = 170,\pi) \]
 
+We can define $\pi = \textrm{P(Vaccine|COVID)} = \frac{\pi_1}{\pi_1 + \pi_2}$, given that the sample sizes for the vaccine and placebo groups are approximately equal. Here, $\pi_1$ is the proportion of vaccinated individuals who got COVID and $\pi_2$ is the proportion of unvaccinated individuals who got COVID. Moreover, we define the vaccine efficacy as $\psi = \frac{1-2\pi}{1-\pi}$.
 
+## Maximum Likelihood Estimator
+
+We can first write the likelihood function of $\pi$
+
+\[ L(\pi) = \binom{n}{t}\pi^t(1 - \pi)^{n - t} \]
+
+Then we write $\pi$ in the form $\pi = g(\psi)$, given that $\psi = \frac{1 - 2\pi}{1 - \pi}$. We thus have that $\psi - \psi\pi = 1 - 2\pi$, which becomes $2\pi - \psi\pi = 1 - \psi$, which becomes:
+
+\[ \pi = \frac{1 - \psi}{2 - \psi} \]
+
+We can then write the likelihood function for $\psi$:
+
+\[ L(\psi) = L(g(\psi)) = L\left(\frac{1 - \psi}{2 - \psi}\right) = \binom{n}{t}\left(\frac{1 - \psi}{2 - \psi}\right)^t\left(1 - \left(\frac{1-\psi}{2-\psi}\right)\right)^{n - t} = \binom{n}{t}\left(\frac{1 - \psi}{2 - \psi}\right)^t\left(\frac{1}{2 - \psi}\right)^{n - t} \]
+
+We can then calculate the log-likelihood function for $\psi$:
+
+\[ \ell(\psi) = \ln(L(\psi) = \ln\left(\binom{n}{t}\right) + t\ln(1 - \psi) - t\ln(2 - \psi) - (n - t)\ln(2 - \psi) = \ln\left(\binom{n}{t}\right) + t\ln(1 - \psi) - n\ln(2 - \psi) \]
+
+We can then find our estimator by setting $\ell'(\psi) = 0$:
+
+\[ \frac{d}{d\psi} \ell(\psi) = \frac{d}{d\psi} \ln\left(\binom{n}{t}\right) + \frac{d}{d\psi} t\ln(1 - \psi) - \frac{d}{d\psi} n\ln(2 - \psi) = \frac{n}{2 - \psi} - \frac{t}{1 - \psi} = 0 \]
+
+We can then solve:
+
+\[ \frac{n}{2 - \psi} = \frac{t}{1 - \psi} \]
+
+We get that $n - n\psi = 2t - t\psi$, which becomes $t\psi - n\psi = 2t - n$, giving us an estimator of $\widehat{\psi}^{mle}_0 = \frac{2t - n}{t - n}$.
+
+## Bootstrap
 
 # Results
+
+For our MLE, we can plug in $t_{obs} = 8$ and $n = 170$ to $\widehat{\psi}^{mle}_0 = \frac{2t - n}{t - n}$, we get $\widehat{\psi}^{mle}_0 = \frac{16 - 170}{8 - 170} = \frac{77}{81} = `r round(77 / 81, 4)`$. We can also use the Newton Raphson method to estimate $\psi$ to get the same value, shown in the appendix.
 
 # Conclusion
 
 # References
 
+<div id="refs"></div>
+
 # Appendix
+
+## Newton Rhapson MLE Approximation
+
+```{r}
+loglik = function(psi, T, n){
+    return(log(choose(n, T)) + (T * log(1 - psi)) - (n * log(2 - psi)))
+}
+
+maxLik(logLik = loglik, start = 0.55, method = "NR", tol = 1e-4, T = 8, n = 170)
+```
+
+## Visualizations
+
+```{r}
+data <- read.csv("data.csv")
+
+data_melted <- melt(data, id.vars = "Test")
+```
+
+## Stacked Barplot
+
+```{r stacked barplot, echo = TRUE}
+ggplot(data_melted, aes(x = Test, y = value, fill = variable)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Test", y = "Number of Participants", 
+       title = "COVID Infection for Vaccine and Placebo Groups") 
+```
+
+## Faceted Barplot
+
+```{r faceted barplot, echo = FALSE}
+ggplot(data_melted, aes(x = Test, y = value)) +
+  geom_bar(stat = "identity") +
+  facet_wrap(~ variable, scales = "free_y") +
+  labs(x = "Test", y = "Number of Participants", 
+       title = "COVID Infection for Vaccine and Placebo Groups")
+```
