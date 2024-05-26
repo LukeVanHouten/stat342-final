@@ -7,6 +7,7 @@ header-includes:
     - \usepackage{amsthm}
 bibliography: refs.bib
 nocite: '@*'
+fontsize: 11pt
 output: pdf_document
 ---
 
@@ -26,7 +27,7 @@ Efficacy, Inference, COVID-19, Statistics, Estimators
 
 # Introduction
 
-In this project, we
+In this project, we will be analyzing the efficacy of the Pfizer-BioNTech BNT162b2 COVID-19 mRNA vaccine based on a sample of placebo-controlled COVID tests [@COVIDpaper]. This data was collected in late 2020 among individuals at least sixteen years old who received two doses of the vaccine three weeks apart, with them being tested for COVID afterwards. The efficacy of the vaccine is extremely important, because the goal of vaccination efforts are to save lives. So, we perform statistical testing to identify whether or not the efficacy rate shown in the vaccine data is acceptable. Our hypothesis is that the BNT162B2 vaccine efficacy is 95%, which we will test using different statistical methods.
 
 # Statistical Methods
 
@@ -58,11 +59,7 @@ We can then find our estimator by setting $\ell'(\psi) = 0$:
 
 \[ \frac{d}{d\psi} \ell(\psi) = \frac{d}{d\psi} \ln\left(\binom{n}{t}\right) + \frac{d}{d\psi} t\ln(1 - \psi) - \frac{d}{d\psi} n\ln(2 - \psi) = \frac{n}{2 - \psi} - \frac{t}{1 - \psi} = 0 \]
 
-We can then solve:
-
-\[ \frac{n}{2 - \psi} = \frac{t}{1 - \psi} \]
-
-We get that $n - n\psi = 2t - t\psi$, which becomes $t\psi - n\psi = 2t - n$, giving us an estimator of $\widehat{\psi}^{mle}_0 = \frac{2t - n}{t - n}$.
+We can then solve $\frac{n}{2 - \psi} = \frac{t}{1 - \psi}$. We get that $n - n\psi = 2t - t\psi$, which becomes $t\psi - n\psi = 2t - n$, giving us an estimator of $\widehat{\psi}^{mle}_0 = \frac{2t - n}{t - n}$.
 
 ## Bootstrap
 
@@ -98,7 +95,7 @@ data_melted <- melt(data, id.vars = "Test")
 
 ## Stacked Barplot
 
-```{r stacked barplot, echo = TRUE}
+```{r stacked barplot, echo = TRUE, out.width="75%"}
 ggplot(data_melted, aes(x = Test, y = value, fill = variable)) +
   geom_bar(stat = "identity") +
   labs(x = "Test", y = "Number of Participants", 
@@ -107,7 +104,7 @@ ggplot(data_melted, aes(x = Test, y = value, fill = variable)) +
 
 ## Faceted Barplot
 
-```{r faceted barplot, echo = FALSE}
+```{r faceted barplot, echo = TRUE, out.width="75%"}
 ggplot(data_melted, aes(x = Test, y = value)) +
   geom_bar(stat = "identity") +
   facet_wrap(~ variable, scales = "free_y") +
