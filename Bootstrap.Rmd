@@ -47,8 +47,10 @@ bootstrap_psis <- numeric(n_bootstrap)
 set.seed(123)
 
 for (i in 1:n_bootstrap) {
-  vaccine_sample <- sample(c(0, 1), size = n_vaccine, replace = TRUE, prob = c(1 - prop_vaccine, prop_vaccine))
-  placebo_sample <- sample(c(0, 1), size = n_placebo, replace = TRUE, prob = c(1 - prop_placebo, prop_placebo))
+  vaccine_sample <- sample(c(0, 1), size = n_vaccine, replace = TRUE, 
+                           prob = c(1 - prop_vaccine, prop_vaccine))
+  placebo_sample <- sample(c(0, 1), size = n_placebo, replace = TRUE, 
+                           prob = c(1 - prop_placebo, prop_placebo))
   
   prop_vaccine_boot <- mean(vaccine_sample)
   prop_placebo_boot <- mean(placebo_sample)
