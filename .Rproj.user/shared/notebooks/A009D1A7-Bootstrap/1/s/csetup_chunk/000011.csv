@@ -1,0 +1,6 @@
+"0","knitr::opts_chunk$set(echo = TRUE, fig.width = 8, fig.height = 6)"
+"0",""
+"0","library(boot)"
+"0","library(readr)"
+"0","library(tidyverse)"
+"0",""
