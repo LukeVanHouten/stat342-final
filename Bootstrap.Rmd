@@ -64,7 +64,7 @@ for (i in 1:n_bootstrap) {
 bootstrap_df <- data.frame(psi = bootstrap_psis)
 
 ggplot(bootstrap_df, aes(x = psi)) +
-  geom_histogram(binwidth = 0.007, fill = "darkorchid1", color = "black") +
+  geom_histogram(binwidth = 0.007, fill = "mediumpurple", color = "black") +
   labs(title = "Histogram of Bootstrap Psi Values", x = "Psi", y = "Frequency") +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5))
@@ -95,7 +95,7 @@ print(overall_ci)
 ```
 
 ```{r}
-plot_data <- ci_data[seq(1, n_bootstrap, by = 300), ]
+plot_data <- ci_data[seq(1, n_bootstrap, by = 200), ]
 
 ggplot(plot_data, aes(y = Iteration)) +
   geom_vline(xintercept = observed_psi, linetype = "solid", color = "red") + 
