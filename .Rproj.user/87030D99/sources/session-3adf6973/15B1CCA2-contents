@@ -1,43 +1,63 @@
-```{r}
+---
+title: "Maximum Likelihood Estimation"
+author: "Josie Czeskleba"
+date: "2024-05-25"
+output: pdf_document
+---
 
+```{r setup, echo = FALSE, include = FALSE}
+library(maxLik)
 library(tidyverse)
-library(maxLik)
-library(fastR2)
+```
 
-options(scipen = 999)
+## Definitions
+
+We denote the random variable $T$ as the number of vaccinated individuals from the 170 COVID cases. \ 
+
+$$ T \sim Binom(n,\pi)$$
+We can define $\pi =$ P(Vaccine|COVID) $= \frac{\pi_1}{\pi_1 + \pi_2}$ (as proved in lecture). Where $\pi_1$ is the proportion of vaccinated individuals who got COVID and $\pi_2$ is the proportion of unvaccinated individuals who got COVID. Moreover, we define the vaccine efficacy as $\psi = \frac{1-2\pi}{1-\pi}$.
+
+
+## Log-Likelihood Calculation 
+
+We can first write the likelihood function of $\pi$: \
+
+$$L(\pi) = \binom{n}{t} \pi^t (1-\pi)^{n-t}$$
+
+
+Then we write $\pi$ in the form $\pi = g(\psi)$:\
+
+$$\pi = \frac{1-\psi}{2-\psi}$$
+
+We can then write the likelihood function for $\psi$.\
+
+$$L^*(\psi) = L(g(\psi)) = L(\frac{1-\psi}{2-\psi}) = \binom{n}{t}\cdot(\frac{1-\psi}{2-\psi})^t\cdot(1-(\frac{1-\psi}{2-\psi}))^{n-t}$$
+
+Finally, we calculate the log-likelihood function for $\psi$:\
+$$\ell(\psi) = \ln(\binom{n}{t}) + t\ln(\frac{1-\psi}{2-\psi}) + (n-t)\cdot\ln(1-\frac{1-\psi}{2-\psi})$$
+Now that we have calculated the log-likelihood function for $\psi$, we can use the Newton Raphson to estimate $\psi$.
+
+
+## Newton Raphson Method
+
+Observed Values:\
+$\pi_1 = 0.047$ \
+$\pi_2 = 0.953$ \
+$\pi = \frac{\pi_1}{\pi_1 + \pi_2} = 0.047$ \
+$\psi = \frac{1-2\pi}{1-\pi} = 0.9507$ \
+$t = 8$ \
+$n = 170$ \
+
+```{r newton raphson, echo = TRUE}
+
+loglik <- function(psi, T, n) {
+  return(log(choose(n,T)) + T * log((1 - psi) / 
+        (2 - psi)) + (n - T) * log(1 - ((1 - psi) / (2 - psi))))
+}
+
+maxLik(logLik = loglik, start = 0.9507,
+       method = "NR", tol = 1e-4,
+       T = 8, n = 170)
 
 ```
 
-```{r}
-
-logLik <- function(psi, t, n) {
-  return(t*log((1 - psi)/(2 - psi)) + (n - t)*log(1 - ((1 - psi)/(2 - psi))))
-}
-
-
-result <- maxLik(logLik, start = 0, method = "NR", tol = 1e-4, t = 8, n = n_vaccine + n_placebo)
-
-summary(result)
-
-```
-
-```{r}
-
-library(maxLik)
-
-logLik <- function(psi, t, n) {
-  return(t * log((1 - psi) / (2 - psi)) + (n - t) * log(1 - ((1 - psi) / (2 - psi))))
-}
-
-logLikWrapper <- function(params) {
-  psi <- params[1]
-  t <- 8
-  n <- n_vaccine + n_placebo
-  return(logLik(psi, t, n))
-}
-
-result <- maxLik(logLikWrapper, start = c(0.5), method = "NR", tol = 1e-4)
-
-summary(result)
-
-```
