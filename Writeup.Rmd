@@ -17,6 +17,7 @@ knitr::opts_chunk$set(warning = FALSE)
 library(tidyverse)
 library(maxLik)
 library(reshape2)
+library(fastR2)
 ```
 
 # Abstract
@@ -35,7 +36,10 @@ We denote the random variable $T$ as the number of vaccinated individuals from t
 
 \[ T \sim Binom(n = 170,\pi) \]
 
-We can define $\pi = \textrm{P(Vaccine|COVID)} = \frac{\pi_1}{\pi_1 + \pi_2}$, given that the sample sizes for the vaccine and placebo groups are approximately equal. Here, $\pi_1$ is the proportion of vaccinated individuals who got COVID and $\pi_2$ is the proportion of unvaccinated individuals who got COVID. Moreover, we define the vaccine efficacy as $\psi = \frac{1-2\pi}{1-\pi}$.
+We can define $\pi = \textrm{P(Vaccine|COVID)} = \frac{\pi_1}{\pi_1 + \pi_2}$, given that the sample sizes for the vaccine and placebo groups are approximately equal. Here, $\pi_1$ is the proportion of vaccinated individuals who got COVID and $\pi_2$ is the proportion of unvaccinated individuals who got COVID. Moreover, we define the vaccine efficacy as $\psi = \frac{1-2\pi}{1-\pi}$ [@errorstatistics]. We can then formulate the following hypothesis test:
+
+\[ H_0: \psi_0 = 0.95 \]
+\[ H_1: \psi_0 \neq 0.95 \]
 
 ## Maximum Likelihood Estimator
 
@@ -59,13 +63,41 @@ We can then find our estimator by setting $\ell'(\psi) = 0$:
 
 \[ \frac{d}{d\psi} \ell(\psi) = \frac{d}{d\psi} \ln\left(\binom{n}{t}\right) + \frac{d}{d\psi} t\ln(1 - \psi) - \frac{d}{d\psi} n\ln(2 - \psi) = \frac{n}{2 - \psi} - \frac{t}{1 - \psi} = 0 \]
 
-We can then solve $\frac{n}{2 - \psi} = \frac{t}{1 - \psi}$. We get that $n - n\psi = 2t - t\psi$, which becomes $t\psi - n\psi = 2t - n$, giving us an estimator of $\widehat{\psi}^{mle}_0 = \frac{2t - n}{t - n}$.
+We can then solve $\frac{n}{2 - \psi} = \frac{t}{1 - \psi}$. We get that $n - n\psi = 2t - t\psi$, which becomes $t\psi - n\psi = 2t - n$, giving us an estimator of $\widehat{\psi}^{mle}_0 = \frac{2t - n}{t - n}$. We can use our MLE to perform a likelihood ratio test, defined as $W = 2\left(\ell\left(\hat{\psi}^{mle}_0\right) - \ell\left(\psi^{null}_0\right)\right)$, which we can write as:
+
+\[ W = 2\left(\left(\ln\left(\binom{n}{t}\right) + t\ln\left(1 - \widehat{\psi}^{mle}_0\right) - n\ln\left(2 - \widehat{\psi}^{mle}_0\right)\right) - \left(\ln\left(\binom{n}{t}\right) + t\ln\left(1 - \psi^{null}_0\right) - n\ln\left(2 - \psi^{null}_0\right)\right)\right) \]
+
+This becomes:
+
+\[ W = 2t\ln\left(1 - \widehat{\psi}^{mle}_0\right) - 2n\ln\left(2 - \widehat{\psi}^{mle}_0\right) - 2t\ln\left(1 - \psi^{null}_0\right) + 2n\ln\left(2 - \psi^{null}_0\right) \]
 
 ## Bootstrap
+
+The bootstrap approach involves repeatedly resampling the observed data with replacement to create numerous simulated datasets. For each simulated dataset, we compute the proportions of COVID-19 cases in both groups, and subsequently, the efficacy parameter $\psi$. This process provides a distribution of the efficacy estimates from which we can derive confidence intervals. 
+
+Step-wise we begin by creating two subsets of the data: one for the vaccine group and one for the placebo group. This step ensures that we can accurately calculate the number of subjects and the proportions of COVID-19 cases within each group.
+
+Once the proportions are calculated, we compute the observed efficacy parameter $\pi$ and subsequently $\psi$. The parameter $\pi$ is defined as the proportion of COVID-19 cases in the vaccine group divided by the sum of the proportions in both the vaccine and placebo groups. The efficacy parameter $\psi$ is then calculated using the formula $\psi = \frac{1 - 2\pi}{1 - \pi}$. These parameters provide a basis for comparing the vaccine's efficacy against COVID-19.
+
+To assess the variability of the efficacy estimate, we perform a bootstrap simulation with 10,000 iterations. In each iteration, resample the data with replacement to generate new datasets for both the vaccine and placebo groups. For each bootstrap sample, we recalculate the proportions of COVID-19 cases and subsequently the efficacy parameter $\psi$. This process generates a distribution of $\psi$ values, which can be used to estimate the confidence interval.
+
+We calculate the 95% confidence interval for the efficacy parameter $\psi$ using the quantiles of the bootstrap distribution. This interval provides a range within which the true efficacy is likely to lie, based on the variability observed in the bootstrap samples.
 
 # Results
 
 For our MLE, we can plug in $t_{obs} = 8$ and $n = 170$ to $\widehat{\psi}^{mle}_0 = \frac{2t - n}{t - n}$, we get $\widehat{\psi}^{mle}_0 = \frac{16 - 170}{8 - 170} = \frac{77}{81} = `r round(77 / 81, 4)`$. We can also use the Newton Raphson method to estimate $\psi$ to get the same value, shown in the appendix.
+
+For the likelihood ratio test, we can plug in our values $\widehat{\psi}^{mle}_0 = `r round(77 / 81, 4)`$, $\psi^{null}_0 = 0.95$, $t = 8$, and $n = 170$ to our W to get:
+
+\[ W = 2(8)\ln\left(1 - `r round(77 / 81, 4)`\right) - 2(170)\ln\left(2 - `r round(77 / 81, 4)`\right) - 2(8)\ln\left(1 - 0.95\right) + 2(170)\ln\left(2 - 0.95\right) = 0.0012 \]
+
+Our sample size is large enough to where $W \sim \chi^2_1$, so we can calculate P-value for our hypothesis as $P(W \geq 0.0012) = 0.9726$. This P-value is very large, so we fail to reject the null hypothesis under our likelihood ratio test that the COVID-19 vaccine efficacy is 95%.
+
+For our bootstrap, the analysis was performed with $10000$ iterations to ensure a stable estimate of the vaccine efficacy. The observed efficacy, calculated from the original data, was consistent with the findings of Polack et al. (2020). The histogram of the bootstrap $\psi$ values revealed a right-skewed distribution, indicating that most of the bootstrap samples support a high efficacy of the vaccine. The $95\%$ confidence interval for $\psi$ derived from the bootstrap distribution, ranged from $0.91$ to $0.98$, closely aligning with the Bayesian credible interval reported in the original study.
+
+(Histogram)
+
+(Segmented line graph)
 
 # Conclusion
 
@@ -78,14 +110,40 @@ For our MLE, we can plug in $t_{obs} = 8$ and $n = 170$ to $\widehat{\psi}^{mle}
 ## Newton Rhapson MLE Approximation
 
 ```{r}
-loglik = function(psi, T, n){
+loglik <- function(psi, T, n){
+  if (psi > 1 | psi < 0) 
+    return(NA)
+  else
     return(log(choose(n, T)) + (T * log(1 - psi)) - (n * log(2 - psi)))
 }
 
-maxLik(logLik = loglik, start = 0.55, method = "NR", tol = 1e-4, T = 8, n = 170)
+estimation <- maxLik2(loglik = loglik, start = 0.55, method = "NR", tol = 1e-4, 
+                      T = 8, n = 170)
+
+print(estimation)
+
 ```
 
+## Likelihood Ratio Test Calculation
+
+```{r}
+W = (2 * 8 * log(1 - (77 / 81))) - (2 * 170 * log(2 - (77 / 81))) -
+    (2 * 8 * log(1 - 0.95)) + (2 * 170 * log(2 - 0.95))
+
+p_value <- round(pchisq(q = W, df = 1, lower.tail=F), 4)
+```
+
+Here, $W$ is `r round(W, 4)` and the corresponding P-value is `r p_value`.
+
 ## Visualizations
+
+```{r}
+
+plot(estimation) +
+    labs(title = "Second order approximation to the Log-Likelihood Function", 
+         x = expression(psi))
+
+```
 
 ```{r}
 data <- read.csv("data.csv")
