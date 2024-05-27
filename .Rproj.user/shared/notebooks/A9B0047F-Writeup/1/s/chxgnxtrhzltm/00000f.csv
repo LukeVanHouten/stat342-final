@@ -1,0 +1,3 @@
+"0","data <- read.csv(""data.csv"")"
+"0",""
+"0","data_melted <- melt(data, id.vars = ""Test"")"

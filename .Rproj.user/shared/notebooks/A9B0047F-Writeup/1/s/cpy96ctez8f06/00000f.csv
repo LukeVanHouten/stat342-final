@@ -1,0 +1,5 @@
+"0","ggplot(data_melted, aes(x = Test, y = value)) +"
+"0","  geom_bar(stat = ""identity"") +"
+"0","  facet_wrap(~ variable, scales = ""free_y"") +"
+"0","  labs(x = ""Test"", y = ""Number of Participants"", "
+"0","       title = ""COVID Infection for Vaccine and Placebo Groups"")"
