@@ -24,7 +24,7 @@ library(fastR2)
 
 # Keywords
 
-Efficacy, Inference, COVID-19, Statistics, Estimators
+Efficacy, Likelihood, COVID-19, Bootstrap, Estimators
 
 # Introduction
 
@@ -268,7 +268,7 @@ pivot_data <- data %>%
   pivot_longer(cols = c(COVID, No_COVID), names_to = "Tests", values_to = "Count")
 
 summary <- pivot_data %>%
-    group_by(Test) %>%
+        group_by(Test) %>%
     summarise(min = min(Count), lower = quantile(Count, 0.25), 
               median = median(Count), upper = quantile(Count, 0.75),
               max = max(Count))
