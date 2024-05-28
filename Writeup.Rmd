@@ -261,6 +261,7 @@ ggplot(data_melted, aes(x = Test, y = value, fill = variable)) +
        title = "COVID Infection for Vaccine and Placebo Groups") 
 ```
 
+<<<<<<< HEAD
 ### Box Plot
 
 ```{r}
@@ -294,3 +295,5 @@ ggplot(pivot_data, aes(x = Test, y = Count, fill = Test)) +
          x = "Test Group", y = "Number of Tests")
 ```
 
+=======
+>>>>>>> 0cb83d34e99be6c9b62792865899d5b990ad286e
