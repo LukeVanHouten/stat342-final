@@ -24,11 +24,11 @@ library(fastR2)
 
 # Keywords
 
-Efficacy, Inference, COVID-19, Statistics, Estimators
+Efficacy, Likelihood, COVID-19, Bootstrap, Estimators
 
 # Introduction
 
-The Coronavirus disease (COVID-19) affected millions worldwide. It was imperative to global health that a safe and effective vaccine was developed. In a late 2020, multinational, placebo-controlled, observer-blinded, pivotal efficacy study observers randomly assigned people ages 16 and older in a 1:1 ratio to receive two doses, of either placebo or the BNT162b2 vaccine.  The primary efficacy endpoint was the time of laboratory-confirmed COVID-19. The FDA requires at least  30% efficacy for a new vaccine to be approved.  We will apply multiple statistical methods to test the hypothesis: the BNT162B2 vaccine has 95% efficacy. 
+The Coronavirus disease (COVID-19) affected millions worldwide. It was imperative to global health that a safe and effective vaccine was developed. In a late 2020, multinational, placebo-controlled, observer-blinded, pivotal efficacy study observers randomly assigned people ages 16 and older in a 1:1 ratio to receive two doses, of either placebo or the BNT162b2 vaccine.  The primary efficacy endpoint was the time of laboratory-confirmed COVID-19. The FDA requires at least 30% efficacy for a new vaccine to be approved. We will apply multiple statistical methods to test the hypothesis: the BNT162B2 vaccine has 95% efficacy. 
 
 
 # Statistical Methods
@@ -253,12 +253,45 @@ data_melted <- melt(data, id.vars = "Test")
 
 ### Stacked Barplot
 
-```{r stacked barplot, echo = TRUE, out.width="75%"}
+```{r stacked barplot, echo = TRUE}
 ggplot(data_melted, aes(x = Test, y = value, fill = variable)) +
   geom_bar(stat = "identity") +
   geom_text(aes(label = value), 
             position = position_stack(vjust = 0.5)) +
   labs(x = "Test", y = "Number of Participants", 
        title = "COVID Infection for Vaccine and Placebo Groups") 
+```
+
+### Box Plot
+
+```{r}
+pivot_data <- data %>%
+  pivot_longer(cols = c(COVID, No_COVID), names_to = "Tests", values_to = "Count")
+
+summary <- pivot_data %>%
+        group_by(Test) %>%
+    summarise(min = min(Count), lower = quantile(Count, 0.25), 
+              median = median(Count), upper = quantile(Count, 0.75),
+              max = max(Count))
+
+ggplot(pivot_data, aes(x = Test, y = Count, fill = Test)) +
+    geom_boxplot() +
+    geom_text(data = summary, aes(x = Test, y = median, 
+                                  label = paste("Median:", median)), 
+              vjust = -0.5) +
+    geom_text(data = summary, aes(x = Test, y = lower, 
+                                  label = paste("Q1:", lower)), 
+              vjust = 1.5, hjust = -0.3) +
+    geom_text(data = summary, aes(x = Test, y = upper, 
+                                  label = paste("Q3:", upper)), 
+              vjust = -1, hjust = -0.3) +
+    geom_text(data = summary, aes(x = Test, y = min, 
+                                  label = paste("Min:", min)), 
+              vjust = 1.3) +
+    geom_text(data = summary, aes(x = Test, y = max, 
+                                  label = paste("Max:", max)), 
+              vjust = -0.5) +
+    labs(title = "Positive and Negative COVID Test Counts by Test Group",
+         x = "Test Group", y = "Number of Tests")
 ```
 
