@@ -28,7 +28,7 @@ Efficacy, Likelihood, COVID-19, Bootstrap, Estimators
 
 # Introduction
 
-The Coronavirus disease (COVID-19) affected millions worldwide. It was imperative to global health that a safe and effective vaccine was developed. In late 2020, a multinational, placebo-controlled, observer-blinded study for the efficacy of the Pfizer-BioNTech BNT16b2 COVID-19 mRNA vaccine was conducted where people ages 16 and older in a 1:1 gender ratio were given two doses of either a placebo or the BNT162b2 vaccine. The efficacy of the vaccine is extremely important, because the goal of vaccination efforts are to save lives. The FDA requires at least  30% efficacy for a new vaccine to be approved, but a much higher percentage is desirable. If the vaccine is not sufficiently effective, than the work put into to developing it would be inefficient, and that work should then be focused on the development of a different vaccine. If the vaccine is sufficiently effective, we can recommend that it be widely used. Our hypothesis is that the BNT162B2 vaccine efficacy is 95%, which we will test using different statistical methods discussed, based on another research effort using Bayesian methods [@COVIDpaper].
+The COVID-19 pandemic affected millions worldwide, and it was imperative to global health that a safe and effective vaccine was developed. In late 2020, a multinational, placebo-controlled, observer-blinded study for the efficacy of the Pfizer-BioNTech BNT16b2 COVID-19 mRNA vaccine was conducted where people ages 16 and older in a 1:1 gender ratio were given two doses of either a placebo or the BNT162b2 vaccine. The efficacy of the vaccine is extremely important, because the goal of vaccination efforts are to save lives. The FDA requires at least  30% efficacy for a new vaccine to be approved, but a much higher percentage is desirable. If the vaccine is not sufficiently effective, than the work put into to developing it would be inefficient, and that work should then be focused on the development of a different vaccine. If the vaccine is sufficiently effective, we can recommend that it be widely used. Our hypothesis is that the BNT162B2 vaccine efficacy is 95%, which we will test using different statistical methods discussed, based on another research effort using Bayesian methods [@COVIDpaper].
 
 # Statistical Methods
 
@@ -121,6 +121,25 @@ For our bootstrap, the analysis was performed with $10000$ iterations to ensure 
 
 # Appendix
 
+## Visualizations
+
+```{r}
+data <- read.csv("data.csv")
+data_melted <- melt(data, id.vars = "Test")
+```
+
+### Stacked Barplot
+
+```{r stacked barplot, echo = TRUE}
+ggplot(data_melted, aes(x = Test, y = value, fill = variable)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = value), 
+            position = position_stack(vjust = 0.5)) +
+  labs(x = "Test", y = "Number of Participants", 
+       title = "COVID Infection for Vaccine and Placebo Groups") 
+```
+
+
 ## Newton Rhapson MLE Approximation
 
 ```{r}
@@ -136,6 +155,9 @@ estimation <- maxLik2(loglik = loglik, start = 0.55, method = "NR", tol = 1e-4,
 
 print(estimation)
 
+plot(estimation) +
+    labs(title = "Second order approximation to the Log-Likelihood Function", 
+         x = expression(psi))
 ```
 
 ## Likelihood Ratio Test Calculation
@@ -152,8 +174,6 @@ Here, $W$ is `r round(W, 4)` and the corresponding P-value is `r p_value`.
 ## Bootstrap
 
 ```{r}
-data <- read.csv("data.csv")
-
 vaccine <- data %>%
   filter(Test == "Vaccine")
 
@@ -204,8 +224,6 @@ ggplot(bootstrap_df, aes(x = psi)) +
 
 ```
 
-
-
 ```{r}
 
 overall_ci <- quantile(bootstrap_psis, c(0.025, 0.975))
@@ -252,26 +270,3 @@ ggplot(plot_data, aes(y = Iteration)) +
         plot.subtitle = element_text(hjust = 0.5, size = 10),
         axis.text.y = element_text(hjust = 1))
 ```
-
-## Visualizations
-
-```{r}
-plot(estimation) +
-    labs(title = "Second order approximation to the Log-Likelihood Function", 
-         x = expression(psi))
-
-data_melted <- melt(data, id.vars = "Test")
-
-```
-
-### Stacked Barplot
-
-```{r stacked barplot, echo = TRUE}
-ggplot(data_melted, aes(x = Test, y = value, fill = variable)) +
-  geom_bar(stat = "identity") +
-  geom_text(aes(label = value), 
-            position = position_stack(vjust = 0.5)) +
-  labs(x = "Test", y = "Number of Participants", 
-       title = "COVID Infection for Vaccine and Placebo Groups") 
-```
-
