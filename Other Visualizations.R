@@ -44,3 +44,40 @@ proportion_df_2_melted <- melt(proportion_df2, id.vars = "Diagnosis",
 
 ggplot(data = proportion_df_2_melted, aes(x = Result, y = Proportion, group = Diagnosis)) +
     geom_boxplot(aes(color = Diagnosis))
+
+
+data_long <- data %>%
+    pivot_longer(cols = c(COVID, No_COVID), names_to = "Status", values_to = "Count")
+# 
+# # Create the box plot with just two boxes
+# ggplot(data_long, aes(x = Test, y = Count, fill = Test)) +
+#     geom_boxplot() +
+#     labs(title = "COVID and No_COVID Counts by Test Group",
+#          x = "Test Group",
+#          y = "Count") 
+
+summary <- data_long %>%
+    group_by(Test) %>%
+    summarise(min = min(Count), lower = quantile(Count, 0.25), 
+              median = median(Count), upper = quantile(Count, 0.75),
+              max = max(Count))
+
+ggplot(data_long, aes(x = Test, y = Count, fill = Test)) +
+    geom_boxplot() +
+    geom_text(data = summary, aes(x = Test, y = median, 
+                                  label = paste("Median:", median)), 
+              vjust = -0.5) +
+    geom_text(data = summary, aes(x = Test, y = lower, 
+                                  label = paste("Q1:", lower)), 
+              vjust = 1.5, hjust = -0.3) +
+    geom_text(data = summary, aes(x = Test, y = upper, 
+                                  label = paste("Q3:", upper)), 
+              vjust = -1, hjust = -0.3) +
+    geom_text(data = summary, aes(x = Test, y = min, 
+                                  label = paste("Min:", min)), 
+              vjust = 1.5) +
+    geom_text(data = summary, aes(x = Test, y = max, 
+                                  label = paste("Max:", max)), 
+              vjust = -1.5) +
+    labs(title = "Positive and Negative COVID Test Counts by Test Group",
+         x = "Test Group", y = "Number of Tests")
