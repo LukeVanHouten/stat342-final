@@ -263,6 +263,6 @@ ggplot(data_melted, aes(x = Test, y = value, fill = variable)) +
   geom_text(aes(label = value), 
             position = position_stack(vjust = 0.5)) +
   labs(x = "Test", y = "Number of Participants", 
-       title = "COVID Infection for Vaccine and Placebo Groups") 
+       title = "COVID Infection for Placebo and Test Groups") 
 ```
 
