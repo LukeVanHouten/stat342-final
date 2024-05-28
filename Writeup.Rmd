@@ -28,7 +28,8 @@ Efficacy, Inference, COVID-19, Statistics, Estimators
 
 # Introduction
 
-In this project, we will be analyzing the efficacy of the Pfizer-BioNTech BNT162b2 COVID-19 mRNA vaccine based on a sample of placebo-controlled COVID tests [@COVIDpaper]. This data was collected in late 2020 among individuals at least sixteen years old who received two doses of the vaccine three weeks apart, with them being tested for COVID afterwards. The efficacy of the vaccine is extremely important, because the goal of vaccination efforts are to save lives. So, we perform statistical testing to identify whether or not the efficacy rate shown in the vaccine data is acceptable. Our hypothesis is that the BNT162B2 vaccine efficacy is 95%, which we will test using different statistical methods.
+The Coronavirus disease (COVID-19) affected millions worldwide. It was imperative to global health that a safe and effective vaccine was developed. In a late 2020, multinational, placebo-controlled, observer-blinded, pivotal efficacy study observers randomly assigned people ages 16 and older in a 1:1 ratio to receive two doses, of either placebo or the BNT162b2 vaccine.  The primary efficacy endpoint was the time of laboratory-confirmed COVID-19. The FDA requires at least  30% efficacy for a new vaccine to be approved.  We will apply multiple statistical methods to test the hypothesis: the BNT162B2 vaccine has 95% efficacy. 
+
 
 # Statistical Methods
 
