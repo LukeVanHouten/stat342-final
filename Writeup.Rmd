@@ -32,6 +32,18 @@ The Coronavirus disease (COVID-19) affected millions worldwide. It was imperativ
 
 # Statistical Methods
 
+The data for positive and negative tests between the placebo and vaccine groups is taken from the previous research on the vaccine efficacy [@COVIDpaper]:
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c|p{1in}|p{1in}|p{1in}}
+    Test & Positive & Negative & Total \\ \hline
+    Vaccine & 8 & 17403 & 17411 \\ \hline
+    Placebo & 162 & 17349 & 17511 \\ \hline
+    Total & 170 & 34752 & 34922 \\ \hline
+    \end{tabular}
+\end{table}
+        
 We denote the random variable $T$ as the number of vaccinated individuals from the 170 COVID cases.
 
 \[ T \sim Binom(n = 170,\pi) \]
@@ -41,9 +53,11 @@ We can define $\pi = \textrm{P(Vaccine|COVID)} = \frac{\pi_1}{\pi_1 + \pi_2}$, g
 \[ H_0: \psi_0 = 0.95 \]
 \[ H_1: \psi_0 \neq 0.95 \]
 
+We will use a maximum likelihood estimator to conduct a likelihood ratio test as well as bootstrapped confidence intervals to test our hypothesis.
+
 ## Maximum Likelihood Estimator
 
-We can first write the likelihood function of $\pi$
+One statistical method that we can use to test our hypothesis is the maximum likelihood estimator (MLE) for our efficacy parameter $\psi$, which we can call $\hat{\psi}^{mle}_0$ given $t_{obs} = 8$ for our positive tests in the vaccine group. In order to calculate this estimator, we can first write the likelihood function of $\pi$ based on the PDF of $T$:
 
 \[ L(\pi) = \binom{n}{t}\pi^t(1 - \pi)^{n - t} \]
 
@@ -51,19 +65,19 @@ Then we write $\pi$ in the form $\pi = g(\psi)$, given that $\psi = \frac{1 - 2\
 
 \[ \pi = \frac{1 - \psi}{2 - \psi} \]
 
-We can then write the likelihood function for $\psi$:
+Because $\psi$ is the parameter we want to make our estimator,we can rewrite our likelihood function in terms of $\psi$, still based on the PDF of $T$ for $t_{obs} = 8$:
 
 \[ L(\psi) = L(g(\psi)) = L\left(\frac{1 - \psi}{2 - \psi}\right) = \binom{n}{t}\left(\frac{1 - \psi}{2 - \psi}\right)^t\left(1 - \left(\frac{1-\psi}{2-\psi}\right)\right)^{n - t} = \binom{n}{t}\left(\frac{1 - \psi}{2 - \psi}\right)^t\left(\frac{1}{2 - \psi}\right)^{n - t} \]
 
-We can then calculate the log-likelihood function for $\psi$:
+Mathematically, it is difficult to do much with just this function, so we can log-transform it to convert it from a product to a sum. We can calculate the log-likelihood function for $\psi$ as shown here:
 
 \[ \ell(\psi) = \ln(L(\psi) = \ln\left(\binom{n}{t}\right) + t\ln(1 - \psi) - t\ln(2 - \psi) - (n - t)\ln(2 - \psi) = \ln\left(\binom{n}{t}\right) + t\ln(1 - \psi) - n\ln(2 - \psi) \]
 
-We can then find our estimator by setting $\ell'(\psi) = 0$:
+Our estimator is defined as where the log-likelihood function is maximized by the parameter $\psi$, and we can find this by computing $\underset{\psi}{\arg\max} \ \ell(\psi | t)$, or in other words, by taking the derivative of this function and setting it equal to 0. So we can calculate $\ell'(\psi) = 0$ here:
 
 \[ \frac{d}{d\psi} \ell(\psi) = \frac{d}{d\psi} \ln\left(\binom{n}{t}\right) + \frac{d}{d\psi} t\ln(1 - \psi) - \frac{d}{d\psi} n\ln(2 - \psi) = \frac{n}{2 - \psi} - \frac{t}{1 - \psi} = 0 \]
 
-We can then solve $\frac{n}{2 - \psi} = \frac{t}{1 - \psi}$. We get that $n - n\psi = 2t - t\psi$, which becomes $t\psi - n\psi = 2t - n$, giving us an estimator of $\widehat{\psi}^{mle}_0 = \frac{2t - n}{t - n}$. We can use our MLE to perform a likelihood ratio test, defined as $W = 2\left(\ell\left(\hat{\psi}^{mle}_0\right) - \ell\left(\psi^{null}_0\right)\right)$, which we can write as:
+We can then solve $\frac{n}{2 - \psi} = \frac{t}{1 - \psi}$. We get that $n - n\psi = 2t - t\psi$, which becomes $t\psi - n\psi = 2t - n$. Assuming that this critical point is a maximum, we have that our estimator estimator is $\widehat{\psi}^{mle}_0 = \frac{2t - n}{t - n}$. We cannot use the estimator on its own to make much inference about our hypothesis. However, e can use our MLE to perform a likelihood ratio test, defined as $W = 2\left(\ell\left(\hat{\psi}^{mle}_0\right) - \ell\left(\psi^{null}_0\right)\right)$. A small $W$ corresponds with statistical significance for rejecting the null hypothesis, and vice versa. For a sufficiently sized $n$, which we have as $n = 170$, the distribution $W \sim \chi^2_1$ holds, letting us compute a P-value for our hypothesis. We can compute this value of $W$ here as:
 
 \[ W = 2\left(\left(\ln\left(\binom{n}{t}\right) + t\ln\left(1 - \widehat{\psi}^{mle}_0\right) - n\ln\left(2 - \widehat{\psi}^{mle}_0\right)\right) - \left(\ln\left(\binom{n}{t}\right) + t\ln\left(1 - \psi^{null}_0\right) - n\ln\left(2 - \psi^{null}_0\right)\right)\right) \]
 
@@ -91,7 +105,7 @@ For the likelihood ratio test, we can plug in our values $\widehat{\psi}^{mle}_0
 
 \[ W = 2(8)\ln\left(1 - `r round(77 / 81, 4)`\right) - 2(170)\ln\left(2 - `r round(77 / 81, 4)`\right) - 2(8)\ln\left(1 - 0.95\right) + 2(170)\ln\left(2 - 0.95\right) = 0.0012 \]
 
-Our sample size is large enough to where $W \sim \chi^2_1$, so we can calculate P-value for our hypothesis as $P(W \geq 0.0012) = 0.9726$. This P-value is very large, so we fail to reject the null hypothesis under our likelihood ratio test that the COVID-19 vaccine efficacy is 95%.
+As stated prior, our sample size is large enough to where $W \sim \chi^2_1$, so we can calculate P-value for our hypothesis as $P(W \geq 0.0012) = 0.9726$. This P-value is very large, so we fail to reject the null hypothesis under our likelihood ratio test that the COVID-19 vaccine efficacy is 95%.
 
 For our bootstrap, the analysis was performed with $10000$ iterations to ensure a stable estimate of the vaccine efficacy. The observed efficacy, calculated from the original data, was consistent with the findings of Polack et al. (2020). The histogram of the bootstrap $\psi$ values revealed a right-skewed distribution, indicating that most of the bootstrap samples support a high efficacy of the vaccine. The $95\%$ confidence interval for $\psi$ derived from the bootstrap distribution, ranged from $0.91$ to $0.98$, closely aligning with the Bayesian credible interval reported in the original study.
 
