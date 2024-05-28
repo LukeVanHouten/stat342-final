@@ -17,6 +17,8 @@ library(tidyverse)
 
 data <- read_csv("data.csv", show_col_types = F)
 
+colnames(data)[colnames(data) == 'No_COVID'] <- 'n'
+
 ```
 
 ```{r}
@@ -27,11 +29,8 @@ vaccine <- data %>%
 placebo <- data %>%
   filter(Test == "Placebo")
 
-n_vaccine <- vaccine$COVID + vaccine$No_COVID
-n_placebo <- placebo$COVID + placebo$No_COVID
-
-prop_vaccine <- vaccine$COVID[1] / n_vaccine
-prop_placebo <- placebo$COVID[1] / n_placebo
+prop_vaccine <- vaccine$COVID / vaccine$n
+prop_placebo <- placebo$COVID / placebo$n
 
 observed_pi <- prop_vaccine/(prop_vaccine + prop_placebo)
 
@@ -47,8 +46,8 @@ bootstrap_psis <- numeric(n_bootstrap)
 set.seed(123)
 
 for (i in 1:n_bootstrap) {
-  vaccine_sample <- sample(c(0, 1), size = n_vaccine, replace = TRUE, prob = c(1 - prop_vaccine, prop_vaccine))
-  placebo_sample <- sample(c(0, 1), size = n_placebo, replace = TRUE, prob = c(1 - prop_placebo, prop_placebo))
+  vaccine_sample <- sample(c(0, 1), size = vaccine$n, replace = TRUE, prob = c(1 - prop_vaccine, prop_vaccine))
+  placebo_sample <- sample(c(0, 1), size = placebo$n, replace = TRUE, prob = c(1 - prop_placebo, prop_placebo))
   
   prop_vaccine_boot <- mean(vaccine_sample)
   prop_placebo_boot <- mean(placebo_sample)
@@ -57,6 +56,7 @@ for (i in 1:n_bootstrap) {
   
   bootstrap_psis[i] <- (1 - 2 * bootstrap_pi) / (1 - bootstrap_pi)
 }
+
 ```
 
 ```{r}
@@ -67,6 +67,7 @@ ggplot(bootstrap_df, aes(x = psi)) +
   geom_histogram(binwidth = 0.007, fill = "mediumpurple", color = "black") +
   labs(title = "Histogram of Bootstrap Psi Values", x = "Psi", y = "Frequency") +
   theme_minimal() +
+  geom_vline(xintercept = observed_psi, linetype = "solid", color = "red") + 
   theme(plot.title = element_text(hjust = 0.5))
 
 ```
@@ -75,7 +76,21 @@ ggplot(bootstrap_df, aes(x = psi)) +
 
 ```{r}
 
-overall_ci <- quantile(bootstrap_psis, c(0.025, 0.975))
+bootstrap_summary <- bootstrap_df %>%
+  summarise(n = n(), 
+            mean = mean(psi), 
+            sd = sd(psi), 
+            lower_critical_value = mean - qnorm(0.975)*sd, 
+            upper_critical_value =  mean + qnorm(0.975)*sd)
+
+lower_critical_value <- bootstrap_summary$lower_critical_value
+upper_critical_value <- bootstrap_summary$upper_critical_value
+
+bootstrap_summary
+
+```
+
+```{r}
 
 ci_data <- data.frame(
   Iteration = 1:n_bootstrap,
@@ -85,26 +100,27 @@ ci_data <- data.frame(
 
 for (i in 1:n_bootstrap) {
   sample_psis <- sample(bootstrap_psis, n_bootstrap, replace = TRUE)
-  ci_data$Lower[i] <- quantile(sample_psis, 0.025)
-  ci_data$Upper[i] <- quantile(sample_psis, 0.975)
+  ci_data$Lower[i] <- mean(sample_psis) - qnorm(0.975)*sd(sample_psis)
+  ci_data$Upper[i] <- mean(sample_psis) + qnorm(0.975)*sd(sample_psis)
 }
-
-print(overall_ci)
-
 
 ```
 
+
 ```{r}
+
 plot_data <- ci_data[seq(1, n_bootstrap, by = 200), ]
 
 ggplot(plot_data, aes(y = Iteration)) +
-  geom_vline(xintercept = observed_psi, linetype = "solid", color = "red") + 
-  geom_text(aes(x = observed_psi-0.0125, y = max(Iteration) + 300, label = "Observed Psi"), color = "red", hjust = -0.05) +
+  geom_vline(xintercept = observed_psi, linetype = "solid", color = "blue") + 
+  geom_text(aes(x = observed_psi, y = max(Iteration) + 300, label = "Observed Psi"), color = "blue", hjust = -0.05) +
+  geom_vline(xintercept = bootstrap_summary$mean, linetype = "dashed", color = "red") + 
+  geom_text(aes(x = bootstrap_summary$mean - 0.012, y = max(Iteration) + 300, label = "Estimated Psi"), color = "red", hjust = -0.05) +
   geom_segment(aes(yend = Iteration, x = Lower, xend = Upper), color = "navy") +
-  geom_vline(xintercept = overall_ci[1], linetype = "dashed", color = "red") +
-  geom_vline(xintercept = overall_ci[2], linetype = "dashed", color = "red") +
-  geom_text(aes(x = overall_ci[1] + 0.0129, y = max(Iteration) + 300, label = "Lower Bound"), color = "red", hjust = 1.1) +
-  geom_text(aes(x = overall_ci[2] - 0.0129, y = max(Iteration) + 300, label = "Upper Bound"), color = "red", hjust = -0.1) +
+  geom_vline(xintercept = lower_critical_value, linetype = "dashed", color = "red") +
+  geom_vline(xintercept = upper_critical_value, linetype = "dashed", color = "red") +
+  geom_text(aes(x = lower_critical_value + 0.0129, y = max(Iteration) + 300, label = "Lower Bound"), color = "red", hjust = 1.1) +
+  geom_text(aes(x = upper_critical_value - 0.0129, y = max(Iteration) + 300, label = "Upper Bound"), color = "red", hjust = -0.1) +
   labs(title = "Confidence Intervals of Bootstrap Samples",
        y = "Iteration",
        x = "Confidence Interval",
@@ -114,4 +130,24 @@ ggplot(plot_data, aes(y = Iteration)) +
         plot.subtitle = element_text(hjust = 0.5, size = 10),
         axis.text.y = element_text(hjust = 1))
 ```
+
+$H_0: \psi = 0.95$
+
+$H_1:\psi \not = 0.95$
+
+The null hypothesis $H_0$ posits that the observed vaccine efficacy is consistent with the bootstrap distribution, implying no significant deviation from what would be expected if the vaccine efficacy were accurately captured by the bootstrap samples. The alternative hypothesis $H_1$ suggests that the observed efficacy is significantly different, indicating potential issues with the efficacy estimate.
+
+```{r}
+
+p_greater_than <- length(bootstrap_psis[bootstrap_psis >= observed_psi])/length(bootstrap_psis)
+p_lower_than <- length(bootstrap_psis[bootstrap_psis <= observed_psi])/length(bootstrap_psis)
+
+p_value <- 2 * min(percent_greater_than, percent_lower_than)
+print(p_value)
+
+2*pnorm(observed_psi, mean = bootstrap_summary$mean, sd = bootstrap_summary$sd, lower.tail = F)
+
+```
+
+Given the empirical p-value of 0.9704, we do not find sufficient evidence to reject the null hypothesis. This high p-value indicates that the observed efficacy $\psi=0.95$ is consistent with the bootstrap distribution, suggesting that the efficacy is not significantly different from the expected distribution. Thus, our analysis supports the conclusion that the observed vaccine efficacy is reliable and within the expected range, reaffirming the findings reported by Pfizer and BioNTech.
 
