@@ -24,7 +24,7 @@ library(fastR2)
 
 # Keywords
 
-Efficacy, Inference, COVID-19, Statistics, Estimators
+Efficacy, Likelihood, COVID-19, Bootstrap, Estimators
 
 # Introduction
 
@@ -261,7 +261,6 @@ ggplot(data_melted, aes(x = Test, y = value, fill = variable)) +
        title = "COVID Infection for Vaccine and Placebo Groups") 
 ```
 
-<<<<<<< HEAD
 ### Box Plot
 
 ```{r}
@@ -269,7 +268,7 @@ pivot_data <- data %>%
   pivot_longer(cols = c(COVID, No_COVID), names_to = "Tests", values_to = "Count")
 
 summary <- pivot_data %>%
-    group_by(Test) %>%
+        group_by(Test) %>%
     summarise(min = min(Count), lower = quantile(Count, 0.25), 
               median = median(Count), upper = quantile(Count, 0.75),
               max = max(Count))
@@ -295,5 +294,3 @@ ggplot(pivot_data, aes(x = Test, y = Count, fill = Test)) +
          x = "Test Group", y = "Number of Tests")
 ```
 
-=======
->>>>>>> 0cb83d34e99be6c9b62792865899d5b990ad286e
