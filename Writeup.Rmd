@@ -5,7 +5,6 @@ subtitle: "Spring 2024"
 header-includes:
     - \usepackage{amsmath}
     - \usepackage{amsthm}
-    - \input{header.tex}
 bibliography: refs.bib
 nocite: '@*'
 fontsize: 11pt
@@ -29,12 +28,7 @@ Efficacy, Likelihood, COVID-19, Bootstrap, Estimators
 
 # Introduction
 
-<<<<<<< HEAD
-The COVID-19 pandemic affected millions worldwide, and it was imperative to global health that a safe and effective vaccine was developed. In late 2020, a multinational, placebo-controlled, observer-blinded study for the efficacy of the Pfizer-BioNTech BNT16b2 COVID-19 mRNA vaccine was conducted where people ages 16 and older in a 1:1 gender ratio were given two doses of either a placebo or the BNT162b2 vaccine. The efficacy of the vaccine is extremely important, because the goal of vaccination efforts are to save lives. The FDA requires at least  30% efficacy for a new vaccine to be approved, but a much higher percentage is desirable. If the vaccine is not sufficiently effective, than the work put into to developing it would be inefficient, and that work should then be focused on the development of a different vaccine. If the vaccine is sufficiently effective, we can recommend that it be widely used. Our hypothesis is that the BNT162B2 vaccine efficacy is at least 30%, which we will test using different statistical methods discussed, based on another research effort using Bayesian methods [@COVIDpaper].
-=======
 The COVID-19 pandemic impacted millions globally, making a safe and effective vaccine crucial. In December 2020, Pfizer and BioNTech received FDA Emergency Use Authorization for their two-dose BNT162b2 COVID-19 mRNA vaccine. This placebo-controlled, observer-blinded study involved participants aged 16 and older, randomly assigned to receive either the placebo or the vaccine. The study measured efficacy by tracking COVID-19 cases, with a null hypothesis of 95% efficacy. Given the FDA's minimum efficacy requirement of 30%, this paper focuses on the statistical analysis of the vaccine's efficacy. Using methods from STAT 341-342, we will apply hypothesis testing, confidence intervals, and Bayesian methods to evaluate the data. The thoroughness of this analysis is essential for ensuring reliable and valid findings, which will guide public health decisions based on robust evidence.[@COVIDpaper].
-
->>>>>>> 16b792b31d3ade3782fa01b975a74a7751351ab6
 
 # Statistical Methods
 
@@ -93,16 +87,13 @@ This becomes:
 
 Finally, we can set up an equation to find a 95% confidence interval for our parameter $\psi$:
 
-\[
-\widehat{\psi}^{\text{mle}}_0 \pm 1.96 \sqrt{\frac{-1}{\ell''(\widehat{\psi}^{\text{mle}}_0)}} = \widehat{\psi}^{\text{mle}}_0 \pm 1.96 \sqrt{\frac{-1}{\frac{n}{(2 - \widehat{\psi}^{\text{mle}}_0)^2} - \frac{t}{(1 - \widehat{\psi}^{\text{mle}}_0)^2}}}
-\]
-
+\[ \widehat{\psi}^{\text{mle}}_0 \pm 1.96 \sqrt{\frac{-1}{\ell''(\widehat{\psi}^{\text{mle}}_0)}} = \widehat{\psi}^{\text{mle}}_0 \pm 1.96 \sqrt{\frac{-1}{\frac{n}{(2 - \widehat{\psi}^{\text{mle}}_0)^2} - \frac{t}{(1 - \widehat{\psi}^{\text{mle}}_0)^2}}} \]
 
 # Results
 
 For our MLE, we can plug in $t_{obs} = 8$ and $n = 170$ to $\widehat{\psi}^{mle}_0 = \frac{2t - n}{t - n}$, we get $\widehat{\psi}^{mle}_0 = \frac{16 - 170}{8 - 170} = \frac{77}{81} = `r round(77 / 81, 4)`$. We can also use the Newton Raphson method to estimate $\psi$ to get the same value, shown in the appendix.
 
-For the likelihood ratio test, we can plug in our values $\widehat{\psi}^{mle}_0 = `r round(77 / 81, 4)`$, $\psi^{null}_0 = 0.95$, $t = 8$, and $n = 170$ to our W to get:
+For the likelihood ratio test, we can plug in our values $\widehat{\psi}^{mle}_0 = `r round(77 / 81, 4)`$, $\psi^{null}_0 = 0.3$, $t = 8$, and $n = 170$ to our W to get:
 
 \[ W = 2(8)\ln\left(1 - `r round(77 / 81, 4)`\right) - 2(170)\ln\left(2 - `r round(77 / 81, 4)`\right) - 2(8)\ln\left(1 - 0.3\right) + 2(170)\ln\left(2 - 0.3\right) = 121.6012 \]
 
@@ -112,12 +103,14 @@ Finally, we can use our MLE estimator to calculate a 95% confidence interval for
 
 \[ 0.9506 \pm 1.96\sqrt{\frac{-1}{-3124.317}} = 0.9506 \pm 0.0351\]
 
-Therefore, we are 95% confident that the true efficacy of the BNT162b2 vaccine lies in interval [91.55%, 98.57%]. These values far exceed the FDA required efficacy of 30%. 
+We are 95% confident that the true efficacy of the BNT162b2 vaccine lies in interval [91.55%, 98.57%]. These values far exceed the FDA required efficacy of 30%. 
 
 For our bootstrap, the analysis was performed with $10000$ iterations to ensure a stable estimate of the vaccine efficacy. The observed efficacy, calculated from the original data, was consistent with the findings of Polack et al. (2020). The histogram of the bootstrap $\psi$ values revealed a right-skewed distribution, indicating that most of the bootstrap samples support a high efficacy of the vaccine. The $95\%$ confidence interval for $\psi$ derived from the bootstrap distribution, ranged from $0.91$ to $0.98$, closely aligning with the Bayesian credible interval reported in the original study.
 
 
 # Conclusion
+
+In conclusion, we can say with great confidence that the Pfizer-BioNTech BNT162b2 COVID-19 vaccine is effective at preventing positive tests of the disease, as the vaccine efficacy is much greater than the FDA target value of 30%. With `r round(100 * (77 / 81), 2)`% efficacy (based off of the maxmimum likelihood estimator for our binomial distribution of positive tests), this COVID-19 vaccine should be recommend for general use for disease prevention. We conducted a variety of statistical testing to back up this claim, such as the likelihood ratio test and boostrapped efficacy paramters, which both netted extremely small P-values as well as tight confidence intervals around the estimate for the vaccine efficacy. Our results match the findings of other research on this vaccine's efficacy, where Bayesian estimates were used to show that the vaccine is sufficiently effective [@COVIDpaper]. Next steps for this research would be to utilize more estimators to reach this conclusion, such as the method of moments estimator as well as to corroborate the previous research using Bayesian methods. Other next steps would be to use these methods to identify vaccine efficacy in vaccines for other diseases, especially newly developed ones.
 
 # References
 
@@ -178,9 +171,10 @@ Here, $W$ is `r round(W, 4)` and the corresponding P-value is `r p_value`.
 ## MLE Confidence interval calculation
 ```{r mle confidence inteval, echo = TRUE}
 
-se <- sqrt(-1/((170/(2-0.9506)^2) - (8/(1-0.9506)^2)))
-upper_lim <- 0.9506 + 1.96*se
-lower_lim <- 0.9506 - 1.96*se
+se <- sqrt(-1 / ((170 / (2 - 0.9506)^2) - (8 / (1 - 0.9506)^2)))
+
+upper_lim <- 0.9506 + 1.96 * se
+lower_lim <- 0.9506 - 1.96 * se
 
 ```
 
