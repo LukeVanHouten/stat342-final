@@ -65,6 +65,7 @@ bootstrap_df <- data.frame(psi = bootstrap_psis)
 
 ggplot(bootstrap_df, aes(x = psi)) +
   geom_histogram(binwidth = 0.007, fill = "mediumpurple", color = "black") +
+  geom_text(aes(x = bootstrap_summary$mean, y = 1650, label = "Estimated Psi"), color = "red", hjust = -0.05) +
   labs(title = "Histogram of Bootstrap Psi Values", x = "Psi", y = "Frequency") +
   theme_minimal() +
   geom_vline(xintercept = observed_psi, linetype = "solid", color = "red") + 
@@ -112,15 +113,13 @@ for (i in 1:n_bootstrap) {
 plot_data <- ci_data[seq(1, n_bootstrap, by = 200), ]
 
 ggplot(plot_data, aes(y = Iteration)) +
-  geom_vline(xintercept = observed_psi, linetype = "solid", color = "blue") + 
-  geom_text(aes(x = observed_psi, y = max(Iteration) + 300, label = "Observed Psi"), color = "blue", hjust = -0.05) +
   geom_vline(xintercept = bootstrap_summary$mean, linetype = "dashed", color = "red") + 
   geom_text(aes(x = bootstrap_summary$mean - 0.012, y = max(Iteration) + 300, label = "Estimated Psi"), color = "red", hjust = -0.05) +
   geom_segment(aes(yend = Iteration, x = Lower, xend = Upper), color = "navy") +
   geom_vline(xintercept = lower_critical_value, linetype = "dashed", color = "red") +
   geom_vline(xintercept = upper_critical_value, linetype = "dashed", color = "red") +
-  geom_text(aes(x = lower_critical_value + 0.0129, y = max(Iteration) + 300, label = "Lower Bound"), color = "red", hjust = 1.1) +
-  geom_text(aes(x = upper_critical_value - 0.0129, y = max(Iteration) + 300, label = "Upper Bound"), color = "red", hjust = -0.1) +
+  geom_text(aes(x = lower_critical_value + 0.012, y = max(Iteration) + 300, label = "Lower Bound"), color = "red", hjust = 1.1) +
+  geom_text(aes(x = upper_critical_value - 0.012, y = max(Iteration) + 300, label = "Upper Bound"), color = "red", hjust = -0.1) +
   labs(title = "Confidence Intervals of Bootstrap Samples",
        y = "Iteration",
        x = "Confidence Interval",
@@ -131,23 +130,10 @@ ggplot(plot_data, aes(y = Iteration)) +
         axis.text.y = element_text(hjust = 1))
 ```
 
-$H_0: \psi = 0.95$
-
-$H_1:\psi \not = 0.95$
-
-The null hypothesis $H_0$ posits that the observed vaccine efficacy is consistent with the bootstrap distribution, implying no significant deviation from what would be expected if the vaccine efficacy were accurately captured by the bootstrap samples. The alternative hypothesis $H_1$ suggests that the observed efficacy is significantly different, indicating potential issues with the efficacy estimate.
 
 ```{r}
 
-p_greater_than <- length(bootstrap_psis[bootstrap_psis >= observed_psi])/length(bootstrap_psis)
-p_lower_than <- length(bootstrap_psis[bootstrap_psis <= observed_psi])/length(bootstrap_psis)
-
-p_value <- 2 * min(percent_greater_than, percent_lower_than)
-print(p_value)
-
-2*pnorm(observed_psi, mean = bootstrap_summary$mean, sd = bootstrap_summary$sd, lower.tail = F)
+2*pnorm(0.3, mean = bootstrap_summary$mean, sd = bootstrap_summary$sd, lower.tail = T)
 
 ```
-
-Given the empirical p-value of 0.9704, we do not find sufficient evidence to reject the null hypothesis. This high p-value indicates that the observed efficacy $\psi=0.95$ is consistent with the bootstrap distribution, suggesting that the efficacy is not significantly different from the expected distribution. Thus, our analysis supports the conclusion that the observed vaccine efficacy is reliable and within the expected range, reaffirming the findings reported by Pfizer and BioNTech.
 
