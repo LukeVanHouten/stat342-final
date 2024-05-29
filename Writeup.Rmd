@@ -28,7 +28,12 @@ Efficacy, Likelihood, COVID-19, Bootstrap, Estimators
 
 # Introduction
 
-The COVID-19 pandemic impacted millions globally, making a safe and effective vaccine crucial. In December 2020, Pfizer and BioNTech received FDA Emergency Use Authorization for their two-dose BNT162b2 COVID-19 mRNA vaccine. This placebo-controlled, observer-blinded study involved participants aged 16 and older, randomly assigned to receive either the placebo or the vaccine. The study measured efficacy by tracking COVID-19 cases, with a null hypothesis of 95% efficacy. Given the FDA's minimum efficacy requirement of 30%, this paper focuses on the statistical analysis of the vaccine's efficacy. Using methods from STAT 341-342, we will apply hypothesis testing, confidence intervals, and Bayesian methods to evaluate the data. The thoroughness of this analysis is essential for ensuring reliable and valid findings, which will guide public health decisions based on robust evidence.[@COVIDpaper].
+The COVID-19 pandemic has impacted millions globally, since the World Health Organization declared it a global pandemic on March 11th, 2020. Sensitive groups are at high risk of COVID-19 and its complications. Moreover, recent studies have shown that long-term COVID-19 or post-COVID-19 symptoms make individuals more susceptible to additional health conditions like diabetes, heart conditions, and neurological conditions [@longcovid]. Therefore a safe and effective vaccine is imperative to global health. 
+
+In December 2020, Pfizer and BioNTech received FDA Emergency Use Authorization for their two-dose BNT162b2 COVID-19 mRNA vaccine. The approval was based on a placebo-controlled, observer-blinded study involving participants aged 16 and older who were randomly assigned to receive either the placebo or the vaccine. The data provided leverage to prove that the BNT162b2 vaccine efficacy exceeds the FDA-required efficacy of 30%.[@COVIDpaper].
+
+ Given the FDA's minimum efficacy requirement of 30%, this paper focuses on the statistical analysis of the vaccine's efficacy. We will utilize hypothesis testing, bootstrapping, and maximum likelihood estimation to evaluate the data. The thoroughness of this analysis is essential for ensuring reliable and valid findings, which will guide public health decisions based on robust evidence.
+
 
 # Statistical Methods
 
@@ -57,7 +62,8 @@ We will use a maximum likelihood estimator to conduct a likelihood ratio test as
 
 ## Maximum Likelihood Estimator
 
-The first method we used to analyze the BNT162b2 vaccine efficacy is maximum likelihood estimation. We found the maximum likelihood estimate for our efficacy parameter $\psi$, which we can call $\hat{\psi}^{mle}_0$ given $t_{obs} = 8$ for our positive tests in the vaccine group. To calculate this estimator, we can first write the likelihood function of $\pi$ based on the PDF of $T$:
+The first method we used to analyze the BNT162b2 vaccine efficacy is maximum likelihood estimation. We found the maximum likelihood estimate for our efficacy parameter $\psi$, which we can call $\hat{\psi}^{mle}_0$. To calculate this estimator, we can first write the likelihood function of $\pi$ based on the PDF of $T$:
+
 
 \[ L(\pi) = \binom{n}{t}\pi^t(1 - \pi)^{n - t} \]
 
@@ -99,13 +105,15 @@ For the likelihood ratio test, we can plug in our values $\widehat{\psi}^{mle}_0
 
 \[ W = 2(8)\ln\left(1 - `r round(77 / 81, 4)`\right) - 2(170)\ln\left(2 - `r round(77 / 81, 4)`\right) - 2(8)\ln\left(1 - 0.3\right) + 2(170)\ln\left(2 - 0.3\right) = 121.6012 \]
 
-As stated prior, our sample size is large enough to where $W \sim \chi^2_1$, so we can calculate P-value for our hypothesis as $P(W \geq 121.6012) = 0$. This P-value is zero, so we can reject the null hypothesis under our likelihood ratio test that the COVID-19 vaccine efficacy is 30%.
+Given our sample size is large we know $W \sim \chi^2_1$. Therefore,  we can calculate P-value for our hypothesis as $P(W \geq 121.6012) = 0$. This P-value is zero, so we can reject the null hypothesis under our likelihood ratio test that the COVID-19 vaccine efficacy is 30%. 
+
 
 Finally, we can use our MLE estimator to calculate a 95% confidence interval for $\psi$:
 
 \[ 0.9506 \pm 1.96\sqrt{\frac{-1}{-3124.317}} = 0.9506 \pm 0.0351\]
 
-We are 95% confident that the true efficacy of the BNT162b2 vaccine lies in interval [91.55%, 98.57%]. These values far exceed the FDA required efficacy of 30%. 
+We are 95% confident that the true efficacy of the BNT162b2 vaccine lies in the interval [91.55%, 98.57%]. This supports our findings in the likelihood ratio test. There is convincing evidence that the true efficacy exceeds the FDA-required efficacy of 30%. 
+
 
 For our bootstrap, the analysis was performed with $10000$ iterations to ensure a stable estimate of the vaccine efficacy. The observed efficacy, calculated from the original data, was consistent with the findings of Polack et al. (2020). The histogram of the bootstrap $\psi$ values revealed a right-skewed distribution, indicating that most of the bootstrap samples support a high efficacy of the vaccine. The $95\%$ confidence interval for $\psi$ derived from the bootstrap distribution, ranged from $0.91$ to $0.98$, closely aligning with the Bayesian credible interval reported in the original study.
 
