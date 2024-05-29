@@ -5,14 +5,15 @@ subtitle: "Spring 2024"
 header-includes:
     - \usepackage{amsmath}
     - \usepackage{amsthm}
+    - \input{header.tex}
 bibliography: refs.bib
 nocite: '@*'
 fontsize: 11pt
 output: pdf_document
 ---
 
+
 ```{r setup, include=FALSE}
-#Use this code chunk to include libraries, and set global options.
 knitr::opts_chunk$set(warning = FALSE)
 library(tidyverse)
 library(maxLik)
@@ -29,7 +30,7 @@ Efficacy, Likelihood, COVID-19, Bootstrap, Estimators
 # Introduction
 
 The COVID-19 pandemic impacted millions globally, making a safe and effective vaccine crucial. In December 2020, Pfizer and BioNTech received FDA Emergency Use Authorization for their two-dose BNT162b2 COVID-19 mRNA vaccine. This placebo-controlled, observer-blinded study involved participants aged 16 and older, randomly assigned to receive either the placebo or the vaccine. The study measured efficacy by tracking COVID-19 cases, with a null hypothesis of 95% efficacy. Given the FDA's minimum efficacy requirement of 30%, this paper focuses on the statistical analysis of the vaccine's efficacy. Using methods from STAT 341-342, we will apply hypothesis testing, confidence intervals, and Bayesian methods to evaluate the data. The thoroughness of this analysis is essential for ensuring reliable and valid findings, which will guide public health decisions based on robust evidence.[@COVIDpaper].
->>>>>>> b27e4fe544496c833c90c722abe3ac32d9f9907d
+
 
 # Statistical Methods
 
@@ -58,7 +59,7 @@ We will use a maximum likelihood estimator to conduct a likelihood ratio test as
 
 ## Maximum Likelihood Estimator
 
-One statistical method that we can use to test our hypothesis is the maximum likelihood estimator (MLE) for our efficacy parameter $\psi$, which we can call $\hat{\psi}^{mle}_0$ given $t_{obs} = 8$ for our positive tests in the vaccine group. In order to calculate this estimator, we can first write the likelihood function of $\pi$ based on the PDF of $T$:
+The first method we used to analyze the BNT162b2 vaccine efficacy is maximum likelihood estimation. We found the maximum likelihood estimate for our efficacy parameter $\psi$, which we can call $\hat{\psi}^{mle}_0$ given $t_{obs} = 8$ for our positive tests in the vaccine group. To calculate this estimator, we can first write the likelihood function of $\pi$ based on the PDF of $T$:
 
 \[ L(\pi) = \binom{n}{t}\pi^t(1 - \pi)^{n - t} \]
 
@@ -86,17 +87,12 @@ This becomes:
 
 \[ W = 2t\ln\left(1 - \widehat{\psi}^{mle}_0\right) - 2n\ln\left(2 - \widehat{\psi}^{mle}_0\right) - 2t\ln\left(1 - \psi^{null}_0\right) + 2n\ln\left(2 - \psi^{null}_0\right) \]
 
-## Bootstrap
+Finally, we can set up an equation to find a 95% confidence interval for our parameter $\psi$:
 
-The bootstrap approach involves repeatedly resampling the observed data with replacement to create numerous simulated datasets. For each simulated dataset, we compute the proportions of COVID-19 cases in both groups, and subsequently, the efficacy parameter $\psi$. This process provides a distribution of the efficacy estimates from which we can derive confidence intervals. 
+\[
+\widehat{\psi}^{\text{mle}}_0 \pm 1.96 \sqrt{\frac{-1}{\ell''(\widehat{\psi}^{\text{mle}}_0)}} = \widehat{\psi}^{\text{mle}}_0 \pm 1.96 \sqrt{\frac{-1}{\frac{n}{(2 - \widehat{\psi}^{\text{mle}}_0)^2} - \frac{t}{(1 - \widehat{\psi}^{\text{mle}}_0)^2}}}
+\]
 
-Step-wise we begin by creating two subsets of the data: one for the vaccine group and one for the placebo group. This step ensures that we can accurately calculate the number of subjects and the proportions of COVID-19 cases within each group.
-
-Once the proportions are calculated, we compute the observed efficacy parameter $\pi$ and subsequently $\psi$. The parameter $\pi$ is defined as the proportion of COVID-19 cases in the vaccine group divided by the sum of the proportions in both the vaccine and placebo groups. The efficacy parameter $\psi$ is then calculated using the formula $\psi = \frac{1 - 2\pi}{1 - \pi}$. These parameters provide a basis for comparing the vaccine's efficacy against COVID-19.
-
-To assess the variability of the efficacy estimate, we perform a bootstrap simulation with 10,000 iterations. In each iteration, resample the data with replacement to generate new datasets for both the vaccine and placebo groups. For each bootstrap sample, we recalculate the proportions of COVID-19 cases and subsequently the efficacy parameter $\psi$. This process generates a distribution of $\psi$ values, which can be used to estimate the confidence interval.
-
-We calculate the 95% confidence interval for the efficacy parameter $\psi$ using the quantiles of the bootstrap distribution. This interval provides a range within which the true efficacy is likely to lie, based on the variability observed in the bootstrap samples.
 
 # Results
 
@@ -108,11 +104,14 @@ For the likelihood ratio test, we can plug in our values $\widehat{\psi}^{mle}_0
 
 As stated prior, our sample size is large enough to where $W \sim \chi^2_1$, so we can calculate P-value for our hypothesis as $P(W \geq 0.0012) = 0.9726$. This P-value is very large, so we fail to reject the null hypothesis under our likelihood ratio test that the COVID-19 vaccine efficacy is 95%.
 
+Finally, we can use our MLE estimator to calculate a 95% confidence interval for $\psi$:
+
+\[ 0.9506 \pm 1.96\sqrt{\frac{-1}{-3124.317}} = 0.9506 \pm 0.0351\]
+
+Therefore, we are 95% confident that the true efficacy of the BNT162b2 vaccine lies in interval [91.55%, 98.57%]. These values far exceed the FDA required efficacy of 30%. 
+
 For our bootstrap, the analysis was performed with $10000$ iterations to ensure a stable estimate of the vaccine efficacy. The observed efficacy, calculated from the original data, was consistent with the findings of Polack et al. (2020). The histogram of the bootstrap $\psi$ values revealed a right-skewed distribution, indicating that most of the bootstrap samples support a high efficacy of the vaccine. The $95\%$ confidence interval for $\psi$ derived from the bootstrap distribution, ranged from $0.91$ to $0.98$, closely aligning with the Bayesian credible interval reported in the original study.
 
-(Histogram)
-
-(Segmented line graph)
 
 # Conclusion
 
@@ -124,7 +123,7 @@ For our bootstrap, the analysis was performed with $10000$ iterations to ensure 
 
 ## Visualizations
 
-```{r}
+```{r read data, echo = FALSE}
 data <- read.csv("data.csv")
 data_melted <- melt(data, id.vars = "Test")
 ```
@@ -143,7 +142,7 @@ ggplot(data_melted, aes(x = Test, y = value, fill = variable)) +
 
 ## Newton Rhapson MLE Approximation
 
-```{r}
+```{r newton rhapson, echo= TRUE}
 loglik <- function(psi, T, n){
   if (psi > 1 | psi < 0) 
     return(NA)
@@ -163,7 +162,7 @@ plot(estimation) +
 
 ## Likelihood Ratio Test Calculation
 
-```{r}
+```{r likelihood ratio test, echo = TRUE}
 W = (2 * 8 * log(1 - (77 / 81))) - (2 * 170 * log(2 - (77 / 81))) -
     (2 * 8 * log(1 - 0.95)) + (2 * 170 * log(2 - 0.95))
 
@@ -172,9 +171,20 @@ p_value <- round(pchisq(q = W, df = 1, lower.tail=F), 4)
 
 Here, $W$ is `r round(W, 4)` and the corresponding P-value is `r p_value`.
 
+## MLE Confidence interval calculation
+```{r mle confidence inteval, echo = TRUE}
+
+se <- sqrt(-1/((170/(2-0.9506)^2) - (8/(1-0.9506)^2)))
+upper_lim <- 0.9506 + 1.96*se
+lower_lim <- 0.9506 - 1.96*se
+
+```
+
+The calculated confidence interval is [0.9155, 0.9856] with a standard error of `r round(se,4)`.
+
 ## Bootstrap
 
-```{r}
+```{r obs psi, echo = TRUE}
 vaccine <- data %>%
   filter(Test == "Vaccine")
 
@@ -192,7 +202,7 @@ observed_pi <- prop_vaccine/(prop_vaccine + prop_placebo)
 observed_psi <- (1 - 2*observed_pi)/(1 - observed_pi)
 ```
 
-```{r}
+```{r bootstrap, echo = TRUE}
 
 n_bootstrap <- 10000
 bootstrap_psis <- numeric(n_bootstrap)
@@ -213,7 +223,7 @@ for (i in 1:n_bootstrap) {
 }
 ```
 
-```{r}
+```{r bootstrap plot, echo = TRUE}
 
 bootstrap_df <- data.frame(psi = bootstrap_psis)
 
@@ -225,7 +235,7 @@ ggplot(bootstrap_df, aes(x = psi)) +
 
 ```
 
-```{r}
+```{r bootstrap CI, echo = TRUE}
 
 overall_ci <- quantile(bootstrap_psis, c(0.025, 0.975))
 
@@ -243,10 +253,9 @@ for (i in 1:n_bootstrap) {
 
 print(overall_ci)
 
-
 ```
 
-```{r}
+```{r bootstrap CI plot, echo = TRUE}
 plot_data <- ci_data[seq(1, n_bootstrap, by = 300), ]
 
 ggplot(plot_data, aes(y = Iteration)) +
@@ -271,29 +280,4 @@ ggplot(plot_data, aes(y = Iteration)) +
         plot.subtitle = element_text(hjust = 0.5, size = 10),
         axis.text.y = element_text(hjust = 1))
 ```
-<<<<<<< HEAD
 
-## Visualizations
-
-```{r}
-plot(estimation) +
-    labs(title = "Second order approximation to the Log-Likelihood Function", 
-         x = expression(psi))
-
-data_melted <- melt(data, id.vars = "Test")
-
-```
-
-### Stacked Barplot
-
-```{r stacked barplot, echo = TRUE}
-ggplot(data_melted, aes(x = Test, y = value, fill = variable)) +
-  geom_bar(stat = "identity") +
-  geom_text(aes(label = value), 
-            position = position_stack(vjust = 0.5)) +
-  labs(x = "Test", y = "Number of Participants", 
-       title = "COVID Infection for Placebo and Test Groups") 
-```
-
-=======
->>>>>>> 34c84fcd80f03f032f77dc0be6d5b36a5d5d13ea
