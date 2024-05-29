@@ -29,12 +29,7 @@ Efficacy, Likelihood, COVID-19, Bootstrap, Estimators
 
 # Introduction
 
-<<<<<<< HEAD
-The COVID-19 pandemic affected millions worldwide, and it was imperative to global health that a safe and effective vaccine was developed. In late 2020, a multinational, placebo-controlled, observer-blinded study for the efficacy of the Pfizer-BioNTech BNT16b2 COVID-19 mRNA vaccine was conducted where people ages 16 and older in a 1:1 gender ratio were given two doses of either a placebo or the BNT162b2 vaccine. The efficacy of the vaccine is extremely important, because the goal of vaccination efforts are to save lives. The FDA requires at least  30% efficacy for a new vaccine to be approved, but a much higher percentage is desirable. If the vaccine is not sufficiently effective, than the work put into to developing it would be inefficient, and that work should then be focused on the development of a different vaccine. If the vaccine is sufficiently effective, we can recommend that it be widely used. Our hypothesis is that the BNT162B2 vaccine efficacy is at least 30%, which we will test using different statistical methods discussed, based on another research effort using Bayesian methods [@COVIDpaper].
-=======
 The COVID-19 pandemic impacted millions globally, making a safe and effective vaccine crucial. In December 2020, Pfizer and BioNTech received FDA Emergency Use Authorization for their two-dose BNT162b2 COVID-19 mRNA vaccine. This placebo-controlled, observer-blinded study involved participants aged 16 and older, randomly assigned to receive either the placebo or the vaccine. The study measured efficacy by tracking COVID-19 cases, with a null hypothesis of 95% efficacy. Given the FDA's minimum efficacy requirement of 30%, this paper focuses on the statistical analysis of the vaccine's efficacy. Using methods from STAT 341-342, we will apply hypothesis testing, confidence intervals, and Bayesian methods to evaluate the data. The thoroughness of this analysis is essential for ensuring reliable and valid findings, which will guide public health decisions based on robust evidence.[@COVIDpaper].
-
->>>>>>> 16b792b31d3ade3782fa01b975a74a7751351ab6
 
 # Statistical Methods
 
