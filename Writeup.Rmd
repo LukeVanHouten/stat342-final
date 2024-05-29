@@ -102,7 +102,7 @@ Finally, we can set up an equation to find a 95% confidence interval for our par
 
 For our MLE, we can plug in $t_{obs} = 8$ and $n = 170$ to $\widehat{\psi}^{mle}_0 = \frac{2t - n}{t - n}$, we get $\widehat{\psi}^{mle}_0 = \frac{16 - 170}{8 - 170} = \frac{77}{81} = `r round(77 / 81, 4)`$. We can also use the Newton Raphson method to estimate $\psi$ to get the same value, shown in the appendix.
 
-For the likelihood ratio test, we can plug in our values $\widehat{\psi}^{mle}_0 = `r round(77 / 81, 4)`$, $\psi^{null}_0 = 0.95$, $t = 8$, and $n = 170$ to our W to get:
+For the likelihood ratio test, we can plug in our values $\widehat{\psi}^{mle}_0 = `r round(77 / 81, 4)`$, $\psi^{null}_0 = 0.3$, $t = 8$, and $n = 170$ to our W to get:
 
 \[ W = 2(8)\ln\left(1 - `r round(77 / 81, 4)`\right) - 2(170)\ln\left(2 - `r round(77 / 81, 4)`\right) - 2(8)\ln\left(1 - 0.3\right) + 2(170)\ln\left(2 - 0.3\right) = 121.6012 \]
 
