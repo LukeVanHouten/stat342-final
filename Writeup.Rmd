@@ -94,6 +94,8 @@ Finally, we can set up an equation to find a 95% confidence interval for our par
 \]
 
 
+
+
 # Results
 
 For our MLE, we can plug in $t_{obs} = 8$ and $n = 170$ to $\widehat{\psi}^{mle}_0 = \frac{2t - n}{t - n}$, we get $\widehat{\psi}^{mle}_0 = \frac{16 - 170}{8 - 170} = \frac{77}{81} = `r round(77 / 81, 4)`$. We can also use the Newton Raphson method to estimate $\psi$ to get the same value, shown in the appendix.
@@ -108,7 +110,7 @@ Finally, we can use our MLE estimator to calculate a 95% confidence interval for
 
 \[ 0.9506 \pm 1.96\sqrt{\frac{-1}{-3124.317}} = 0.9506 \pm 0.0351\]
 
-Therefore, we are 95% confident that the true efficacy of the BNT162b2 vaccine lies in interval [91.55%, 98.57%]. These values far exceed the FDA required efficacy of 30%. 
+We are 95% confident that the true efficacy of the BNT162b2 vaccine lies in interval [91.55%, 98.57%]. These values far exceed the FDA required efficacy of 30%. 
 
 For our bootstrap, the analysis was performed with $10000$ iterations to ensure a stable estimate of the vaccine efficacy. The observed efficacy, calculated from the original data, was consistent with the findings of Polack et al. (2020). The histogram of the bootstrap $\psi$ values revealed a right-skewed distribution, indicating that most of the bootstrap samples support a high efficacy of the vaccine. The $95\%$ confidence interval for $\psi$ derived from the bootstrap distribution, ranged from $0.91$ to $0.98$, closely aligning with the Bayesian credible interval reported in the original study.
 
