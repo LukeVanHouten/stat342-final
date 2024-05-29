@@ -28,7 +28,7 @@ Efficacy, Likelihood, COVID-19, Bootstrap, Estimators
 
 # Introduction
 
-The COVID-19 pandemic affected millions worldwide, and it was imperative to global health that a safe and effective vaccine was developed. In late 2020, a multinational, placebo-controlled, observer-blinded study for the efficacy of the Pfizer-BioNTech BNT16b2 COVID-19 mRNA vaccine was conducted where people ages 16 and older in a 1:1 gender ratio were given two doses of either a placebo or the BNT162b2 vaccine. The efficacy of the vaccine is extremely important, because the goal of vaccination efforts are to save lives. The FDA requires at least  30% efficacy for a new vaccine to be approved, but a much higher percentage is desirable. If the vaccine is not sufficiently effective, than the work put into to developing it would be inefficient, and that work should then be focused on the development of a different vaccine. If the vaccine is sufficiently effective, we can recommend that it be widely used. Our hypothesis is that the BNT162B2 vaccine efficacy is 95%, which we will test using different statistical methods discussed, based on another research effort using Bayesian methods [@COVIDpaper].
+The COVID-19 pandemic affected millions worldwide, and it was imperative to global health that a safe and effective vaccine was developed. In late 2020, a multinational, placebo-controlled, observer-blinded study for the efficacy of the Pfizer-BioNTech BNT16b2 COVID-19 mRNA vaccine was conducted where people ages 16 and older in a 1:1 gender ratio were given two doses of either a placebo or the BNT162b2 vaccine. The efficacy of the vaccine is extremely important, because the goal of vaccination efforts are to save lives. The FDA requires at least  30% efficacy for a new vaccine to be approved, but a much higher percentage is desirable. If the vaccine is not sufficiently effective, than the work put into to developing it would be inefficient, and that work should then be focused on the development of a different vaccine. If the vaccine is sufficiently effective, we can recommend that it be widely used. Our hypothesis is that the BNT162B2 vaccine efficacy is at least 30%, which we will test using different statistical methods discussed, based on another research effort using Bayesian methods [@COVIDpaper].
 
 # Statistical Methods
 
@@ -50,8 +50,8 @@ We denote the random variable $T$ as the number of vaccinated individuals from t
 
 We can define $\pi = \textrm{P(Vaccine|COVID)} = \frac{\pi_1}{\pi_1 + \pi_2}$, given that the sample sizes for the vaccine and placebo groups are approximately equal. Here, $\pi_1$ is the proportion of vaccinated individuals who got COVID and $\pi_2$ is the proportion of unvaccinated individuals who got COVID. Moreover, we define the vaccine efficacy as $\psi = \frac{1-2\pi}{1-\pi}$ [@errorstatistics]. We can then formulate the following hypothesis test:
 
-\[ H_0: \psi_0 = 0.95 \]
-\[ H_1: \psi_0 \neq 0.95 \]
+\[ H_0: \psi_0 = 0.3 \]
+\[ H_1: \psi_0 \geq 0.3 \]
 
 We will use a maximum likelihood estimator to conduct a likelihood ratio test as well as bootstrapped confidence intervals to test our hypothesis.
 
@@ -103,9 +103,9 @@ For our MLE, we can plug in $t_{obs} = 8$ and $n = 170$ to $\widehat{\psi}^{mle}
 
 For the likelihood ratio test, we can plug in our values $\widehat{\psi}^{mle}_0 = `r round(77 / 81, 4)`$, $\psi^{null}_0 = 0.95$, $t = 8$, and $n = 170$ to our W to get:
 
-\[ W = 2(8)\ln\left(1 - `r round(77 / 81, 4)`\right) - 2(170)\ln\left(2 - `r round(77 / 81, 4)`\right) - 2(8)\ln\left(1 - 0.95\right) + 2(170)\ln\left(2 - 0.95\right) = 0.0012 \]
+\[ W = 2(8)\ln\left(1 - `r round(77 / 81, 4)`\right) - 2(170)\ln\left(2 - `r round(77 / 81, 4)`\right) - 2(8)\ln\left(1 - 0.3\right) + 2(170)\ln\left(2 - 0.3\right) = 121.6012 \]
 
-As stated prior, our sample size is large enough to where $W \sim \chi^2_1$, so we can calculate P-value for our hypothesis as $P(W \geq 0.0012) = 0.9726$. This P-value is very large, so we fail to reject the null hypothesis under our likelihood ratio test that the COVID-19 vaccine efficacy is 95%.
+As stated prior, our sample size is large enough to where $W \sim \chi^2_1$, so we can calculate P-value for our hypothesis as $P(W \geq 121.6012) = 0$. This P-value is zero, so we can reject the null hypothesis under our likelihood ratio test that the COVID-19 vaccine efficacy is 30%.
 
 For our bootstrap, the analysis was performed with $10000$ iterations to ensure a stable estimate of the vaccine efficacy. The observed efficacy, calculated from the original data, was consistent with the findings of Polack et al. (2020). The histogram of the bootstrap $\psi$ values revealed a right-skewed distribution, indicating that most of the bootstrap samples support a high efficacy of the vaccine. The $95\%$ confidence interval for $\psi$ derived from the bootstrap distribution, ranged from $0.91$ to $0.98$, closely aligning with the Bayesian credible interval reported in the original study.
 
@@ -164,9 +164,9 @@ plot(estimation) +
 
 ```{r}
 W = (2 * 8 * log(1 - (77 / 81))) - (2 * 170 * log(2 - (77 / 81))) -
-    (2 * 8 * log(1 - 0.95)) + (2 * 170 * log(2 - 0.95))
+    (2 * 8 * log(1 - 0.3)) + (2 * 170 * log(2 - 0.3))
 
-p_value <- round(pchisq(q = W, df = 1, lower.tail=F), 4)
+p_value <- pchisq(q = W, df = 1, lower.tail=F)
 ```
 
 Here, $W$ is `r round(W, 4)` and the corresponding P-value is `r p_value`.
