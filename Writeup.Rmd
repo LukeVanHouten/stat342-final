@@ -89,7 +89,7 @@ Finally, we can set up an equation to find a 95% confidence interval for our par
 
 \[ \widehat{\psi}^{\text{mle}}_0 \pm 1.96 \sqrt{\frac{-1}{\ell''(\widehat{\psi}^{\text{mle}}_0)}} = \widehat{\psi}^{\text{mle}}_0 \pm 1.96 \sqrt{\frac{-1}{\frac{n}{(2 - \widehat{\psi}^{\text{mle}}_0)^2} - \frac{t}{(1 - \widehat{\psi}^{\text{mle}}_0)^2}}} \]
 
-
+## Bootstrap
 
 # Results
 
