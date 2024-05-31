@@ -201,20 +201,38 @@ The calculated confidence interval is [0.9155, 0.9856] with a standard error of 
 
 ## Bootstrap
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, fig.width = 8, fig.height = 6)
+
+library(boot)
+library(readr)
+library(tidyverse)
+
+```
+
 ```{r}
+
+data <- read_csv("data.csv", show_col_types = F)
+
+```
+
+```{r}
+
 vaccine <- data %>%
   filter(Test == "Vaccine")
 
 placebo <- data %>%
   filter(Test == "Placebo")
 
-prop_vaccine <- vaccine$COVID / vaccine$n
-prop_placebo <- placebo$COVID / placebo$n
+prop_vaccine <- vaccine$COVID / (vaccine$COVID + vaccine$No_COVID)
+prop_placebo <- placebo$COVID / (placebo$COVID + placebo$No_COVID)
 
 observed_pi <- prop_vaccine/(prop_vaccine + prop_placebo)
 
 observed_psi <- (1 - 2*observed_pi)/(1 - observed_pi)
+
 ```
+
 
 ```{r}
 
@@ -223,8 +241,8 @@ bootstrap_psis <- numeric(n_bootstrap)
 set.seed(123)
 
 for (i in 1:n_bootstrap) {
-  vaccine_sample <- sample(c(0, 1), size = vaccine$n, replace = TRUE, prob = c(1 - prop_vaccine, prop_vaccine))
-  placebo_sample <- sample(c(0, 1), size = placebo$n, replace = TRUE, prob = c(1 - prop_placebo, prop_placebo))
+  vaccine_sample <- sample(c(0, 1), size = vaccine$COVID + vaccine$No_COVID, replace = TRUE, prob = c(1 - prop_vaccine, prop_vaccine))
+  placebo_sample <- sample(c(0, 1), size = placebo$COVID + placebo$No_COVID, replace = TRUE, prob = c(1 - prop_placebo, prop_placebo))
   
   prop_vaccine_boot <- mean(vaccine_sample)
   prop_placebo_boot <- mean(placebo_sample)
@@ -235,6 +253,8 @@ for (i in 1:n_bootstrap) {
 }
 
 ```
+
+
 
 ```{r}
 
@@ -253,12 +273,10 @@ upper_critical_value <- bootstrap_summary$upper_critical_value
 bootstrap_summary
 
 ```
-
 ```{r}
 
 ggplot(bootstrap_df, aes(x = psi)) +
   geom_histogram(binwidth = 0.007, fill = "mediumpurple", color = "black") +
-  geom_text(aes(x = bootstrap_summary$mean, y = 1650, label = "Estimated Psi"), color = "red", hjust = -0.05) +
   labs(title = "Histogram of Bootstrap Psi Values", x = "Psi", y = "Frequency") +
   theme_minimal() +
   geom_vline(xintercept = observed_psi, linetype = "solid", color = "red") + 
@@ -280,6 +298,7 @@ for (i in 1:n_bootstrap) {
   sample_psis <- sample(bootstrap_psis, n_bootstrap, replace = TRUE)
   ci_data$Lower[i] <- mean(sample_psis) - qnorm(0.975)*sd(sample_psis)
   ci_data$Upper[i] <- mean(sample_psis) + qnorm(0.975)*sd(sample_psis)
+  ci_data$Mean[i] <- mean(sample_psis)
 }
 
 ```
@@ -287,16 +306,16 @@ for (i in 1:n_bootstrap) {
 
 ```{r}
 
-plot_data <- ci_data[seq(1, n_bootstrap, by = 200), ]
+plot_data <- ci_data[seq(1, n_bootstrap, by = 150), ]
 
 ggplot(plot_data, aes(y = Iteration)) +
-  geom_vline(xintercept = bootstrap_summary$mean, linetype = "dashed", color = "red") + 
-  geom_text(aes(x = bootstrap_summary$mean - 0.012, y = max(Iteration) + 300, label = "Estimated Psi"), color = "red", hjust = -0.05) +
   geom_segment(aes(yend = Iteration, x = Lower, xend = Upper), color = "navy") +
+  geom_point(aes(y = Iteration, x = Mean), color = "navy")+
   geom_vline(xintercept = lower_critical_value, linetype = "dashed", color = "red") +
   geom_vline(xintercept = upper_critical_value, linetype = "dashed", color = "red") +
   geom_text(aes(x = lower_critical_value + 0.012, y = max(Iteration) + 300, label = "Lower Bound"), color = "red", hjust = 1.1) +
   geom_text(aes(x = upper_critical_value - 0.012, y = max(Iteration) + 300, label = "Upper Bound"), color = "red", hjust = -0.1) +
+  geom_vline(xintercept = bootstrap_summary$mean, linetype = "dashed", color = "red") + 
   labs(title = "Confidence Intervals of Bootstrap Samples",
        y = "Iteration",
        x = "Confidence Interval",
@@ -307,10 +326,13 @@ ggplot(plot_data, aes(y = Iteration)) +
         axis.text.y = element_text(hjust = 1))
 ```
 
+
 ```{r}
 
-# Finding the p-value
+p_val <- pnorm(0.3, mean = bootstrap_summary$mean, sd = bootstrap_summary$sd, lower.tail = F)
 
-pnorm(0.3, mean = bootstrap_summary$mean, sd = bootstrap_summary$sd, lower.tail = T)
+1 - p_val
+
+1 - p_val < 0.05
 
 ```
