@@ -97,6 +97,10 @@ Finally, we can set up an equation to find a 95% confidence interval for our par
 
 ## Bootstrap
 
+Bootstrapping is a powerful statistical technique used to estimate the sampling distribution of a statistic by repeatedly resampling with replacement from the original data. This method allows for the assessment of the variability and accuracy of the statistic without relying on strong parametric assumptions. By generating numerous resampled sets of data, bootstrapping creates a distribution of the statistic of interest, which can be used to derive confidence intervals.
+
+In our analysis, bootstrapping is applied to estimate the efficacy of the BNT162b2 vaccine. By generating multiple resampled datasets from the original data, we can repeatedly calculate the vaccine efficacy and construct a distribution of these efficacy estimates. This distribution provides valuable insights into the range, variability, and confidence intervals of the vaccine's effectiveness. Using bootstrapping, we can assess the reliability of the observed efficacy, ensuring that the conclusions drawn from the data are well-supported by a rigorous statistical framework.
+
 # Results
 
 For our MLE, we can plug in $t_{obs} = 8$ and $n = 170$ to $\widehat{\psi}^{mle}_0 = \frac{2t - n}{t - n}$, we get $\widehat{\psi}^{mle}_0 = \frac{16 - 170}{8 - 170} = \frac{77}{81} = `r round(77 / 81, 4)`$. We can also use the Newton Raphson method to estimate $\psi$ to get the same value, shown in the appendix.
@@ -114,8 +118,13 @@ Finally, we can use our MLE estimator to calculate a 95% confidence interval for
 
 We are 95% confident that the true efficacy of the BNT162b2 vaccine lies in the interval [91.55%, 98.57%]. This supports our findings in the likelihood ratio test. There is convincing evidence that the true efficacy exceeds the FDA-required efficacy of 30%. 
 
+Furthermore, the vaccine efficacy ($\psi$) for the BNT162b2 vaccine was estimated using a bootstrap method with 10,000 iterations, ensuring accurate and stable estimates. The observed vaccine efficacy from the original data was calculated using the given formula, resulting in an estimated $\psi$ of approximately 95\%.
 
-For our bootstrap, the analysis was performed with $10000$ iterations to ensure a stable estimate of the vaccine efficacy. The observed efficacy, calculated from the original data, was consistent with the findings of Polack et al. (2020). The histogram of the bootstrap $\psi$ values revealed a right-skewed distribution, indicating that most of the bootstrap samples support a high efficacy of the vaccine. The $95\%$ confidence interval for $\psi$ derived from the bootstrap distribution, ranged from $0.91$ to $0.98$, closely aligning with the Bayesian credible interval reported in the original study.
+The bootstrap resampling provided a distribution of $\psi$ values, from which the mean efficacy was estimated to be 0.9508 with a standard deviation of 0.0178. The 95\% confidence interval for the vaccine efficacy, derived from the bootstrap samples, ranged from approximately 91.59\% to 98.58\%. This confidence interval is quite narrow, indicating a high level of precision in the efficacy estimate.
+
+The histogram of the bootstrap $\psi$ values, along with the confidence intervals, confirms that the estimated efficacy is consistently around 95\%, supporting the robustness of the estimate. Furthermore, the probability that the vaccine efficacy exceeds 30\% is 1, with the calculated p-value being effectively zero ($3.74 \times 10^{-292}$). This overwhelming evidence suggests that the vaccine significantly reduces the risk of infection compared to the placebo.
+
+In summary, the results from the bootstrap analysis strongly support the conclusion that the BNT162b2 vaccine is highly effective, with an estimated efficacy of around 95\%. The narrow confidence interval and extremely low p-value reinforce the reliability and significance of the vaccine's protective effect against COVID-19.
 
 
 # Conclusion
@@ -192,35 +201,30 @@ The calculated confidence interval is [0.9155, 0.9856] with a standard error of 
 
 ## Bootstrap
 
-```{r obs psi, echo = TRUE}
+```{r}
 vaccine <- data %>%
   filter(Test == "Vaccine")
 
 placebo <- data %>%
   filter(Test == "Placebo")
 
-n_vaccine <- vaccine$COVID + vaccine$No_COVID
-n_placebo <- placebo$COVID + placebo$No_COVID
-
-prop_vaccine <- vaccine$COVID[1] / n_vaccine
-prop_placebo <- placebo$COVID[1] / n_placebo
+prop_vaccine <- vaccine$COVID / vaccine$n
+prop_placebo <- placebo$COVID / placebo$n
 
 observed_pi <- prop_vaccine/(prop_vaccine + prop_placebo)
 
 observed_psi <- (1 - 2*observed_pi)/(1 - observed_pi)
 ```
 
-```{r bootstrap, echo = TRUE}
+```{r}
 
 n_bootstrap <- 10000
 bootstrap_psis <- numeric(n_bootstrap)
 set.seed(123)
 
 for (i in 1:n_bootstrap) {
-  vaccine_sample <- sample(c(0, 1), size = n_vaccine, replace = TRUE, 
-                           prob = c(1 - prop_vaccine, prop_vaccine))
-  placebo_sample <- sample(c(0, 1), size = n_placebo, replace = TRUE, 
-                           prob = c(1 - prop_placebo, prop_placebo))
+  vaccine_sample <- sample(c(0, 1), size = vaccine$n, replace = TRUE, prob = c(1 - prop_vaccine, prop_vaccine))
+  placebo_sample <- sample(c(0, 1), size = placebo$n, replace = TRUE, prob = c(1 - prop_placebo, prop_placebo))
   
   prop_vaccine_boot <- mean(vaccine_sample)
   prop_placebo_boot <- mean(placebo_sample)
@@ -229,23 +233,42 @@ for (i in 1:n_bootstrap) {
   
   bootstrap_psis[i] <- (1 - 2 * bootstrap_pi) / (1 - bootstrap_pi)
 }
+
 ```
 
-```{r bootstrap plot, echo = TRUE}
+```{r}
 
 bootstrap_df <- data.frame(psi = bootstrap_psis)
 
+bootstrap_summary <- bootstrap_df %>%
+  summarise(n = n(), 
+            mean = mean(psi), 
+            sd = sd(psi), 
+            lower_critical_value = mean - qnorm(0.975)*sd, 
+            upper_critical_value =  mean + qnorm(0.975)*sd)
+
+lower_critical_value <- bootstrap_summary$lower_critical_value
+upper_critical_value <- bootstrap_summary$upper_critical_value
+
+bootstrap_summary
+
+```
+
+```{r}
+
 ggplot(bootstrap_df, aes(x = psi)) +
-  geom_histogram(binwidth = 0.007, fill = "darkorchid1", color = "black") +
+  geom_histogram(binwidth = 0.007, fill = "mediumpurple", color = "black") +
+  geom_text(aes(x = bootstrap_summary$mean, y = 1650, label = "Estimated Psi"), color = "red", hjust = -0.05) +
   labs(title = "Histogram of Bootstrap Psi Values", x = "Psi", y = "Frequency") +
   theme_minimal() +
+  geom_vline(xintercept = observed_psi, linetype = "solid", color = "red") + 
+  geom_vline(xintercept = bootstrap_summary$upper_critical_value, linetype = "dashed", color = "red") + 
+  geom_vline(xintercept = bootstrap_summary$lower_critical_value, linetype = "dashed", color = "red") + 
   theme(plot.title = element_text(hjust = 0.5))
 
 ```
 
-```{r bootstrap CI, echo = TRUE}
-
-overall_ci <- quantile(bootstrap_psis, c(0.025, 0.975))
+```{r}
 
 ci_data <- data.frame(
   Iteration = 1:n_bootstrap,
@@ -255,37 +278,39 @@ ci_data <- data.frame(
 
 for (i in 1:n_bootstrap) {
   sample_psis <- sample(bootstrap_psis, n_bootstrap, replace = TRUE)
-  ci_data$Lower[i] <- quantile(sample_psis, 0.025)
-  ci_data$Upper[i] <- quantile(sample_psis, 0.975)
+  ci_data$Lower[i] <- mean(sample_psis) - qnorm(0.975)*sd(sample_psis)
+  ci_data$Upper[i] <- mean(sample_psis) + qnorm(0.975)*sd(sample_psis)
 }
-
-print(overall_ci)
 
 ```
 
-```{r bootstrap CI plot, echo = TRUE}
-plot_data <- ci_data[seq(1, n_bootstrap, by = 300), ]
+
+```{r}
+
+plot_data <- ci_data[seq(1, n_bootstrap, by = 200), ]
 
 ggplot(plot_data, aes(y = Iteration)) +
-  geom_vline(xintercept = observed_psi, linetype = "solid", color = "red") + 
-  geom_text(aes(x = observed_psi-0.0125, 
-                y = max(Iteration) + 300, label = "Observed Psi"), 
-            color = "red", hjust = -0.05) +
+  geom_vline(xintercept = bootstrap_summary$mean, linetype = "dashed", color = "red") + 
+  geom_text(aes(x = bootstrap_summary$mean - 0.012, y = max(Iteration) + 300, label = "Estimated Psi"), color = "red", hjust = -0.05) +
   geom_segment(aes(yend = Iteration, x = Lower, xend = Upper), color = "navy") +
-  geom_vline(xintercept = overall_ci[1], linetype = "dashed", color = "red") +
-  geom_vline(xintercept = overall_ci[2], linetype = "dashed", color = "red") +
-  geom_text(aes(x = overall_ci[1] + 0.0129, 
-                y = max(Iteration) + 300, label = "Lower Bound"), 
-            color = "red", hjust = 1.1) +
-  geom_text(aes(x = overall_ci[2] - 0.0129, y = max(Iteration) + 300, 
-                label = "Upper Bound"), color = "red", hjust = -0.1) +
+  geom_vline(xintercept = lower_critical_value, linetype = "dashed", color = "red") +
+  geom_vline(xintercept = upper_critical_value, linetype = "dashed", color = "red") +
+  geom_text(aes(x = lower_critical_value + 0.012, y = max(Iteration) + 300, label = "Lower Bound"), color = "red", hjust = 1.1) +
+  geom_text(aes(x = upper_critical_value - 0.012, y = max(Iteration) + 300, label = "Upper Bound"), color = "red", hjust = -0.1) +
   labs(title = "Confidence Intervals of Bootstrap Samples",
        y = "Iteration",
        x = "Confidence Interval",
-       subtitle = "Each line segment represents a 95% confidence interval for a bootstrap sample") +
+       subtitle = "Each line segment represents a 95% confidence interval for a bootstrapped sample") +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5),
         plot.subtitle = element_text(hjust = 0.5, size = 10),
         axis.text.y = element_text(hjust = 1))
 ```
 
+```{r}
+
+# Finding the p-value
+
+pnorm(0.3, mean = bootstrap_summary$mean, sd = bootstrap_summary$sd, lower.tail = T)
+
+```
