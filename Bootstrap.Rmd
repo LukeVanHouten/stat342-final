@@ -21,8 +21,6 @@ library(tidyverse)
 
 data <- read_csv("data.csv", show_col_types = F)
 
-colnames(data)[colnames(data) == 'No_COVID'] <- 'n'
-
 ```
 
 ```{r}
@@ -33,8 +31,8 @@ vaccine <- data %>%
 placebo <- data %>%
   filter(Test == "Placebo")
 
-prop_vaccine <- vaccine$COVID / vaccine$n
-prop_placebo <- placebo$COVID / placebo$n
+prop_vaccine <- vaccine$COVID / (vaccine$COVID + vaccine$No_COVID)
+prop_placebo <- placebo$COVID / (placebo$COVID + placebo$No_COVID)
 
 observed_pi <- prop_vaccine/(prop_vaccine + prop_placebo)
 
@@ -50,8 +48,8 @@ bootstrap_psis <- numeric(n_bootstrap)
 set.seed(123)
 
 for (i in 1:n_bootstrap) {
-  vaccine_sample <- sample(c(0, 1), size = vaccine$n, replace = TRUE, prob = c(1 - prop_vaccine, prop_vaccine))
-  placebo_sample <- sample(c(0, 1), size = placebo$n, replace = TRUE, prob = c(1 - prop_placebo, prop_placebo))
+  vaccine_sample <- sample(c(0, 1), size = vaccine$COVID + vaccine$No_COVID, replace = TRUE, prob = c(1 - prop_vaccine, prop_vaccine))
+  placebo_sample <- sample(c(0, 1), size = placebo$COVID + placebo$No_COVID, replace = TRUE, prob = c(1 - prop_placebo, prop_placebo))
   
   prop_vaccine_boot <- mean(vaccine_sample)
   prop_placebo_boot <- mean(placebo_sample)
@@ -67,6 +65,8 @@ for (i in 1:n_bootstrap) {
 
 ```{r}
 
+bootstrap_df <- data.frame(psi = bootstrap_psis)
+
 bootstrap_summary <- bootstrap_df %>%
   summarise(n = n(), 
             mean = mean(psi), 
@@ -81,8 +81,6 @@ bootstrap_summary
 
 ```
 ```{r}
-
-bootstrap_df <- data.frame(psi = bootstrap_psis)
 
 ggplot(bootstrap_df, aes(x = psi)) +
   geom_histogram(binwidth = 0.007, fill = "mediumpurple", color = "black") +
@@ -138,15 +136,19 @@ ggplot(plot_data, aes(y = Iteration)) +
 
 ```{r}
 
-pnorm(0.3, mean = bootstrap_summary$mean, sd = bootstrap_summary$sd, lower.tail = T)
+p_val <- pnorm(0.3, mean = bootstrap_summary$mean, sd = bootstrap_summary$sd, lower.tail = F)
+
+1 - p_val
+
+1 - p_val < 0.05
 
 ```
 
 Based on the analysis conducted, the vaccine efficacy ($\psi$) for the BNT162b2 vaccine was estimated using a bootstrap method with 10,000 iterations, ensuring accurate and stable estimates. The observed vaccine efficacy from the original data was calculated using the given formula, resulting in an estimated $\psi$ of approximately 95\%.
 
-The bootstrap resampling provided a distribution of $\psi$ values, from which the mean efficacy was estimated to be 0.9508 with a standard deviation of 0.0178. The 95\% confidence interval for the vaccine efficacy, derived from the bootstrap samples, ranged from approximately 91.59\% to 98.58\%. This confidence interval is quite narrow, indicating a high level of precision in the efficacy estimate.
+The bootstrap resampling provided a distribution of $\psi$ values, from which the mean efficacy was estimated to be 0.95002 with a standard deviation of 0.01802. The 95\% confidence interval for the vaccine efficacy, derived from the bootstrap samples, ranged from approximately 91.47\% to 98.53\%. This confidence interval is quite narrow, indicating a high level of precision in the efficacy estimate.
 
-The histogram of the bootstrap $\psi$ values, along with the confidence intervals, confirms that the estimated efficacy is consistently around 95\%, supporting the robustness of the estimate. Furthermore, the probability that the vaccine efficacy exceeds 30\% is 1, with the calculated p-value being effectively zero ($3.74 \times 10^{-292}$). This overwhelming evidence suggests that the vaccine significantly reduces the risk of infection compared to the placebo.
+The histogram of the bootstrap $\psi$ values, along with the confidence intervals, confirms that the estimated efficacy is consistently around 95\%, supporting the robustness of the estimate. Furthermore, the probability that the vaccine efficacy exceeds 30\% is 1, with the calculated p-value being effectively zero. This overwhelming evidence suggests that the vaccine significantly reduces the risk of infection compared to the placebo.
 
 In summary, the results from the bootstrap analysis strongly support the conclusion that the BNT162b2 vaccine is highly effective, with an estimated efficacy of around 95\%. The narrow confidence interval and extremely low p-value reinforce the reliability and significance of the vaccine's protective effect against COVID-19.
 
