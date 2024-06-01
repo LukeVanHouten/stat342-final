@@ -28,13 +28,18 @@ Efficacy, Likelihood, COVID-19, Bootstrap, Estimators
 
 # Introduction
 
-The COVID-19 pandemic impacted millions globally, making a safe and effective vaccine crucial. In December 2020, Pfizer and BioNTech received FDA Emergency Use Authorization for their two-dose BNT162b2 COVID-19 mRNA vaccine. This placebo-controlled, observer-blinded study involved participants aged 16 and older, randomly assigned to receive either the placebo or the vaccine. The study measured efficacy by tracking COVID-19 cases, with a null hypothesis of 95% efficacy. Given the FDA's minimum efficacy requirement of 30%, this paper focuses on the statistical analysis of the vaccine's efficacy. Using methods from STAT 341-342, we will apply hypothesis testing, confidence intervals, and Bayesian methods to evaluate the data. The thoroughness of this analysis is essential for ensuring reliable and valid findings, which will guide public health decisions based on robust evidence.[@COVIDpaper].
+The COVID-19 pandemic has impacted millions globally, since the World Health Organization declared it a global pandemic on March 11th, 2020. Sensitive groups are at high risk of COVID-19 and its complications. Moreover, recent studies have shown that long-term COVID-19 or post-COVID-19 symptoms make individuals more susceptible to additional health conditions like diabetes, heart conditions, and neurological conditions [@longcovid]. Therefore a safe and effective vaccine is imperative to global health. 
+
+In December 2020, Pfizer and BioNTech received FDA Emergency Use Authorization for their two-dose BNT162b2 COVID-19 mRNA vaccine. The approval was based on a placebo-controlled, observer-blinded study involving participants aged 16 and older who were randomly assigned to receive either the placebo or the vaccine. The data provided leverage to prove that the BNT162b2 vaccine efficacy exceeds the FDA-required efficacy of 30%.[@COVIDpaper].
+
+ Given the FDA's minimum efficacy requirement of 30%, this paper focuses on the statistical analysis of the vaccine's efficacy. We will utilize hypothesis testing, bootstrapping, and maximum likelihood estimation to evaluate the data. The thoroughness of this analysis is essential for ensuring reliable and valid findings, which will guide public health decisions based on robust evidence.
+
 
 # Statistical Methods
 
 The data for positive and negative tests between the placebo and vaccine groups is taken from the previous research on the vaccine efficacy [@COVIDpaper]:
 
-\begin{table}[h]
+\begin{table}[ht]
     \centering
     \begin{tabular}{c|p{1in}|p{1in}|p{1in}}
     Test & Positive & Negative & Total \\ \hline
@@ -57,7 +62,8 @@ We will use a maximum likelihood estimator to conduct a likelihood ratio test as
 
 ## Maximum Likelihood Estimator
 
-The first method we used to analyze the BNT162b2 vaccine efficacy is maximum likelihood estimation. We found the maximum likelihood estimate for our efficacy parameter $\psi$, which we can call $\hat{\psi}^{mle}_0$ given $t_{obs} = 8$ for our positive tests in the vaccine group. To calculate this estimator, we can first write the likelihood function of $\pi$ based on the PDF of $T$:
+The first method we used to analyze the BNT162b2 vaccine efficacy is maximum likelihood estimation. We found the maximum likelihood estimate for our efficacy parameter $\psi$, which we can call $\hat{\psi}^{mle}_0$. To calculate this estimator, we can first write the likelihood function of $\pi$ based on the PDF of $T$:
+
 
 \[ L(\pi) = \binom{n}{t}\pi^t(1 - \pi)^{n - t} \]
 
@@ -91,6 +97,10 @@ Finally, we can set up an equation to find a 95% confidence interval for our par
 
 ## Bootstrap
 
+Bootstrapping is a powerful statistical technique used to estimate the sampling distribution of a statistic by repeatedly resampling with replacement from the original data. This method allows for the assessment of the variability and accuracy of the statistic without relying on strong parametric assumptions. By generating numerous resampled sets of data, bootstrapping creates a distribution of the statistic of interest, which can be used to derive confidence intervals.
+
+In our analysis, bootstrapping is applied to estimate the efficacy of the BNT162b2 vaccine. By generating multiple resampled datasets from the original data, we can repeatedly calculate the vaccine efficacy and construct a distribution of these efficacy estimates. This distribution provides valuable insights into the range, variability, and confidence intervals of the vaccine's effectiveness. Using bootstrapping, we can assess the reliability of the observed efficacy, ensuring that the conclusions drawn from the data are well-supported by a rigorous statistical framework.
+
 # Results
 
 For our MLE, we can plug in $t_{obs} = 8$ and $n = 170$ to $\widehat{\psi}^{mle}_0 = \frac{2t - n}{t - n}$, we get $\widehat{\psi}^{mle}_0 = \frac{16 - 170}{8 - 170} = \frac{77}{81} = `r round(77 / 81, 4)`$. We can also use the Newton Raphson method to estimate $\psi$ to get the same value, shown in the appendix.
@@ -99,15 +109,22 @@ For the likelihood ratio test, we can plug in our values $\widehat{\psi}^{mle}_0
 
 \[ W = 2(8)\ln\left(1 - `r round(77 / 81, 4)`\right) - 2(170)\ln\left(2 - `r round(77 / 81, 4)`\right) - 2(8)\ln\left(1 - 0.3\right) + 2(170)\ln\left(2 - 0.3\right) = 121.6012 \]
 
-As stated prior, our sample size is large enough to where $W \sim \chi^2_1$, so we can calculate P-value for our hypothesis as $P(W \geq 121.6012) = 0$. This P-value is zero, so we can reject the null hypothesis under our likelihood ratio test that the COVID-19 vaccine efficacy is 30%.
+Given our sample size is large we know $W \sim \chi^2_1$. Therefore,  we can calculate P-value for our hypothesis as $P(W \geq 121.6012) = 0$. This P-value is zero, so we can reject the null hypothesis under our likelihood ratio test that the COVID-19 vaccine efficacy is 30%. 
+
 
 Finally, we can use our MLE estimator to calculate a 95% confidence interval for $\psi$:
 
 \[ 0.9506 \pm 1.96\sqrt{\frac{-1}{-3124.317}} = 0.9506 \pm 0.0351\]
 
-We are 95% confident that the true efficacy of the BNT162b2 vaccine lies in interval [91.55%, 98.57%]. These values far exceed the FDA required efficacy of 30%. 
+We are 95% confident that the true efficacy of the BNT162b2 vaccine lies in the interval [91.55%, 98.57%]. This supports our findings in the likelihood ratio test. There is convincing evidence that the true efficacy exceeds the FDA-required efficacy of 30%. 
 
-For our bootstrap, the analysis was performed with $10000$ iterations to ensure a stable estimate of the vaccine efficacy. The observed efficacy, calculated from the original data, was consistent with the findings of Polack et al. (2020). The histogram of the bootstrap $\psi$ values revealed a right-skewed distribution, indicating that most of the bootstrap samples support a high efficacy of the vaccine. The $95\%$ confidence interval for $\psi$ derived from the bootstrap distribution, ranged from $0.91$ to $0.98$, closely aligning with the Bayesian credible interval reported in the original study.
+Furthermore, the vaccine efficacy ($\psi$) for the BNT162b2 vaccine was estimated using a bootstrap method with 10,000 iterations, ensuring accurate and stable estimates. The observed vaccine efficacy from the original data was calculated using the given formula, resulting in an estimated $\psi$ of approximately 95\%.
+
+The bootstrap resampling provided a distribution of $\psi$ values, from which the mean efficacy was estimated to be 0.9508 with a standard deviation of 0.0178. The 95\% confidence interval for the vaccine efficacy, derived from the bootstrap samples, ranged from approximately 91.59\% to 98.58\%. This confidence interval is quite narrow, indicating a high level of precision in the efficacy estimate.
+
+The histogram of the bootstrap $\psi$ values, along with the confidence intervals, confirms that the estimated efficacy is consistently around 95\%, supporting the robustness of the estimate. Furthermore, the probability that the vaccine efficacy exceeds 30\% is 1, with the calculated p-value being effectively zero ($3.74 \times 10^{-292}$). This overwhelming evidence suggests that the vaccine significantly reduces the risk of infection compared to the placebo.
+
+In summary, the results from the bootstrap analysis strongly support the conclusion that the BNT162b2 vaccine is highly effective, with an estimated efficacy of around 95\%. The narrow confidence interval and extremely low p-value reinforce the reliability and significance of the vaccine's protective effect against COVID-19.
 
 
 # Conclusion
@@ -184,35 +201,39 @@ The calculated confidence interval is [0.9155, 0.9856] with a standard error of 
 
 ## Bootstrap
 
-```{r obs psi, echo = TRUE}
+```{r}
+
+data <- read_csv("data.csv", show_col_types = F)
+
+```
+
+```{r}
+
 vaccine <- data %>%
   filter(Test == "Vaccine")
 
 placebo <- data %>%
   filter(Test == "Placebo")
 
-n_vaccine <- vaccine$COVID + vaccine$No_COVID
-n_placebo <- placebo$COVID + placebo$No_COVID
-
-prop_vaccine <- vaccine$COVID[1] / n_vaccine
-prop_placebo <- placebo$COVID[1] / n_placebo
+prop_vaccine <- vaccine$COVID / (vaccine$COVID + vaccine$No_COVID)
+prop_placebo <- placebo$COVID / (placebo$COVID + placebo$No_COVID)
 
 observed_pi <- prop_vaccine/(prop_vaccine + prop_placebo)
 
 observed_psi <- (1 - 2*observed_pi)/(1 - observed_pi)
+
 ```
 
-```{r bootstrap, echo = TRUE}
+
+```{r}
 
 n_bootstrap <- 10000
 bootstrap_psis <- numeric(n_bootstrap)
 set.seed(123)
 
 for (i in 1:n_bootstrap) {
-  vaccine_sample <- sample(c(0, 1), size = n_vaccine, replace = TRUE, 
-                           prob = c(1 - prop_vaccine, prop_vaccine))
-  placebo_sample <- sample(c(0, 1), size = n_placebo, replace = TRUE, 
-                           prob = c(1 - prop_placebo, prop_placebo))
+  vaccine_sample <- sample(c(0, 1), size = vaccine$COVID + vaccine$No_COVID, replace = TRUE, prob = c(1 - prop_vaccine, prop_vaccine))
+  placebo_sample <- sample(c(0, 1), size = placebo$COVID + placebo$No_COVID, replace = TRUE, prob = c(1 - prop_placebo, prop_placebo))
   
   prop_vaccine_boot <- mean(vaccine_sample)
   prop_placebo_boot <- mean(placebo_sample)
@@ -221,23 +242,42 @@ for (i in 1:n_bootstrap) {
   
   bootstrap_psis[i] <- (1 - 2 * bootstrap_pi) / (1 - bootstrap_pi)
 }
+
 ```
 
-```{r bootstrap plot, echo = TRUE}
+
+
+```{r}
 
 bootstrap_df <- data.frame(psi = bootstrap_psis)
 
+bootstrap_summary <- bootstrap_df %>%
+  summarise(n = n(), 
+            mean = mean(psi), 
+            sd = sd(psi), 
+            lower_critical_value = mean - qnorm(0.975)*sd, 
+            upper_critical_value =  mean + qnorm(0.975)*sd)
+
+lower_critical_value <- bootstrap_summary$lower_critical_value
+upper_critical_value <- bootstrap_summary$upper_critical_value
+
+bootstrap_summary
+
+```
+```{r}
+
 ggplot(bootstrap_df, aes(x = psi)) +
-  geom_histogram(binwidth = 0.007, fill = "darkorchid1", color = "black") +
+  geom_histogram(binwidth = 0.007, fill = "mediumpurple", color = "black") +
   labs(title = "Histogram of Bootstrap Psi Values", x = "Psi", y = "Frequency") +
   theme_minimal() +
+  geom_vline(xintercept = observed_psi, linetype = "solid", color = "red") + 
+  geom_vline(xintercept = bootstrap_summary$upper_critical_value, linetype = "dashed", color = "red") + 
+  geom_vline(xintercept = bootstrap_summary$lower_critical_value, linetype = "dashed", color = "red") + 
   theme(plot.title = element_text(hjust = 0.5))
 
 ```
 
-```{r bootstrap CI, echo = TRUE}
-
-overall_ci <- quantile(bootstrap_psis, c(0.025, 0.975))
+```{r}
 
 ci_data <- data.frame(
   Iteration = 1:n_bootstrap,
@@ -247,37 +287,43 @@ ci_data <- data.frame(
 
 for (i in 1:n_bootstrap) {
   sample_psis <- sample(bootstrap_psis, n_bootstrap, replace = TRUE)
-  ci_data$Lower[i] <- quantile(sample_psis, 0.025)
-  ci_data$Upper[i] <- quantile(sample_psis, 0.975)
+  ci_data$Lower[i] <- mean(sample_psis) - qnorm(0.975)*sd(sample_psis)
+  ci_data$Upper[i] <- mean(sample_psis) + qnorm(0.975)*sd(sample_psis)
+  ci_data$Mean[i] <- mean(sample_psis)
 }
-
-print(overall_ci)
 
 ```
 
-```{r bootstrap CI plot, echo = TRUE}
-plot_data <- ci_data[seq(1, n_bootstrap, by = 300), ]
+
+```{r}
+
+plot_data <- ci_data[seq(1, n_bootstrap, by = 150), ]
 
 ggplot(plot_data, aes(y = Iteration)) +
-  geom_vline(xintercept = observed_psi, linetype = "solid", color = "red") + 
-  geom_text(aes(x = observed_psi-0.0125, 
-                y = max(Iteration) + 300, label = "Observed Psi"), 
-            color = "red", hjust = -0.05) +
   geom_segment(aes(yend = Iteration, x = Lower, xend = Upper), color = "navy") +
-  geom_vline(xintercept = overall_ci[1], linetype = "dashed", color = "red") +
-  geom_vline(xintercept = overall_ci[2], linetype = "dashed", color = "red") +
-  geom_text(aes(x = overall_ci[1] + 0.0129, 
-                y = max(Iteration) + 300, label = "Lower Bound"), 
-            color = "red", hjust = 1.1) +
-  geom_text(aes(x = overall_ci[2] - 0.0129, y = max(Iteration) + 300, 
-                label = "Upper Bound"), color = "red", hjust = -0.1) +
+  geom_point(aes(y = Iteration, x = Mean), color = "navy")+
+  geom_vline(xintercept = lower_critical_value, linetype = "dashed", color = "red") +
+  geom_vline(xintercept = upper_critical_value, linetype = "dashed", color = "red") +
+  geom_text(aes(x = lower_critical_value + 0.012, y = max(Iteration) + 300, label = "Lower Bound"), color = "red", hjust = 1.1) +
+  geom_text(aes(x = upper_critical_value - 0.012, y = max(Iteration) + 300, label = "Upper Bound"), color = "red", hjust = -0.1) +
+  geom_vline(xintercept = bootstrap_summary$mean, linetype = "dashed", color = "red") + 
   labs(title = "Confidence Intervals of Bootstrap Samples",
        y = "Iteration",
        x = "Confidence Interval",
-       subtitle = "Each line segment represents a 95% confidence interval for a bootstrap sample") +
+       subtitle = "Each line segment represents a 95% confidence interval for a bootstrapped sample") +
   theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5),
         plot.subtitle = element_text(hjust = 0.5, size = 10),
         axis.text.y = element_text(hjust = 1))
 ```
 
+
+```{r}
+
+p_val <- pnorm(0.3, mean = bootstrap_summary$mean, sd = bootstrap_summary$sd, lower.tail = F)
+
+1 - p_val
+
+1 - p_val < 0.05
+
+```
