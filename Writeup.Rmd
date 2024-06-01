@@ -201,18 +201,13 @@ The calculated confidence interval is [0.9155, 0.9856] with a standard error of 
 
 ## Bootstrap
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, fig.width = 8, fig.height = 6)
+```{r}
+
+data <- read_csv("data.csv", show_col_types = F)
 
 library(boot)
 library(readr)
 library(tidyverse)
-
-```
-
-```{r}
-
-data <- read_csv("data.csv", show_col_types = F)
 
 ```
 
@@ -273,16 +268,29 @@ upper_critical_value <- bootstrap_summary$upper_critical_value
 bootstrap_summary
 
 ```
+
+
 ```{r}
 
 ggplot(bootstrap_df, aes(x = psi)) +
-  geom_histogram(binwidth = 0.007, fill = "mediumpurple", color = "black") +
-  labs(title = "Histogram of Bootstrap Psi Values", x = "Psi", y = "Frequency") +
+  geom_histogram(aes(y = after_stat(density)), 
+                 bins = round(log(length(bootstrap_df$psi), base = 2)), 
+                 fill = "mediumpurple", 
+                 color = "black") +
+  labs(title = "Histogram of Bootstrap Psi Values", x = "Psi") +
   theme_minimal() +
-  geom_vline(xintercept = observed_psi, linetype = "solid", color = "red") + 
-  geom_vline(xintercept = bootstrap_summary$upper_critical_value, linetype = "dashed", color = "red") + 
-  geom_vline(xintercept = bootstrap_summary$lower_critical_value, linetype = "dashed", color = "red") + 
-  theme(plot.title = element_text(hjust = 0.5))
+  geom_vline(xintercept = observed_psi, 
+             linetype = "solid", 
+             color = "red") + 
+  geom_vline(xintercept = bootstrap_summary$upper_critical_value, 
+             linetype = "dashed", 
+             color = "red") + 
+  geom_vline(xintercept = bootstrap_summary$lower_critical_value, 
+             linetype = "dashed", 
+             color = "red") + 
+  scale_y_continuous(labels = scales::number_format(accuracy = 0.1)) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  stat_function(fun = dnorm, args = list(mean = bootstrap_summary$mean, sd = bootstrap_summary$sd), color = "blue", size = 1)
 
 ```
 
@@ -329,10 +337,12 @@ ggplot(plot_data, aes(y = Iteration)) +
 
 ```{r}
 
-p_val <- pnorm(0.3, mean = bootstrap_summary$mean, sd = bootstrap_summary$sd, lower.tail = F)
+p_val <- pnorm(0.3, mean = bootstrap_summary$mean, sd = bootstrap_summary$sd, lower.tail = T)
 
-1 - p_val
+emp_p_val <- length(bootstrap_df[bootstrap_df$psi <= 0.3])/length(bootstrap_df$psi)
 
-1 - p_val < 0.05
+cat("Estimated p-value:", emp_p_val, "\n")
+
+cat("Empirical p-value:", emp_p_val, "\n")
 
 ```
