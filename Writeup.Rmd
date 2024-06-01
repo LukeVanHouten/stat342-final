@@ -103,7 +103,7 @@ Our estimator is defined as where the log-likelihood function is maximized by th
 
 We can then solve $\frac{n}{2 - \psi} = \frac{t}{1 - \psi}$. We get that $n - n\psi = 2t - t\psi$, which becomes $t\psi - n\psi = 2t - n$. Assuming that this critical point is a maximum, we have that our estimator estimator is $\widehat{\psi}^{mle}_0 = \frac{2t - n}{t - n}$. We cannot use the estimator on its own to make much inference about our hypothesis. However, e can use our MLE to perform a likelihood ratio test, defined as $W = 2\left(\ell\left(\hat{\psi}^{mle}_0\right) - \ell\left(\psi^{null}_0\right)\right)$. A small $W$ corresponds with statistical significance for rejecting the null hypothesis, and vice versa. For a sufficiently sized $n$, which we have as $n = 170$, the distribution $W \sim \chi^2_1$ holds, letting us compute a P-value for our hypothesis. We can compute this value of $W$ here as:
 
-\[ W = 2\left(\left(\ln\left(\binom{n}{t}\right) + t\ln\left(1 - \widehat{\psi}^{mle}_0\right) - n\ln\left(2 - \widehat{\psi}^{mle}_0\right)\right) - \left(\ln\left(\binom{n}{t}\right) + t\ln\left(1 - \psi^{null}_0\right) - n\ln\left(2 - \psi^{null}_0\right)\right)\right) \]
+\[ W = 2\left(\left(\ln\left(\binom{n}{t}\right) + t\ln\left(1 - \widehat{\psi}^{mle}_0\right) - n\ln\left(2 - \widehat{\psi}^{mle}_0\right)\right) - \left(\ln\left(\binom{n}{t}\right) + t\ln\left(1 - \psi^{null}_0\right) - n\ln\left(2 - \psi^{null}_0\right)\right)\right)\]
 
 This becomes:
 
@@ -121,7 +121,7 @@ In our analysis, bootstrapping is applied to estimate the efficacy of the BNT162
 
 In this analysis, we conducted a bootstrap resampling procedure to evaluate the distribution of the psi values, a derived statistic from the proportions of COVID cases in vaccine and placebo groups. The bootstrap technique involves repeatedly sampling with replacement from the original data to create numerous simulated samples. This method helps in estimating the sampling distribution of the statistic of interest and provides insights into its variability and confidence intervals.
 
-The proportions of COVID cases in each group (\texttt{prop\_vaccine} and \texttt{prop\_placebo}) were calculated using the provided data. 
+The proportions of COVID cases in each group ($\texttt{prop_vaccine}$ and $\texttt{prop_placebo}$) were calculated using the provided data. 
 
 $$\text{Observed }\pi = \frac{\text{Observed }\pi_1}{\text{Observed }\pi_1 + \text{Observed }\pi_2}$$
 
@@ -131,7 +131,7 @@ $$\text{Observed } \psi = \frac{1 - 2 \times \text{Observed } \pi}{1 - \text{Obs
 
 where $\text{observed_pi}$ is the proportion of COVID cases in the vaccine group relative to the combined total of COVID cases in both groups.
 
-A total of 10,000 bootstrap samples were generated. For each iteration, random samples were drawn with replacement from the \texttt{vaccine} and \texttt{placebo} groups based on their respective proportions. The bootstrap psi value was then calculated for each resampled dataset. This process generated a distribution of psi values, stored in \texttt{bootstrap\_df}.
+A total of 10,000 bootstrap samples were generated. For each iteration, random samples were drawn with replacement from the $\texttt{vaccine}$ and $\texttt{placebo}$ groups based on their respective proportions. The bootstrap psi value was then calculated for each resampled dataset. This process generated a distribution of psi values, stored in $\texttt{bootstrap_df}$.
 
 The summary statistics of the bootstrap distribution, including the mean, standard deviation, and 95\% confidence intervals, were calculated. The critical values for the confidence intervals were determined using the quantiles of the normal distribution:
 

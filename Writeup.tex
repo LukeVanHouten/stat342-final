@@ -1,0 +1,762 @@
+% Options for packages loaded elsewhere
+\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{hyphens}{url}
+%
+\documentclass[
+  11pt,
+]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{iftex}
+\ifPDFTeX
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+  \usepackage{textcomp} % provide euro and other symbols
+\else % if luatex or xetex
+  \usepackage{unicode-math} % this also loads fontspec
+  \defaultfontfeatures{Scale=MatchLowercase}
+  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+\fi
+\usepackage{lmodern}
+\ifPDFTeX\else
+  % xetex/luatex font selection
+\fi
+% Use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+\IfFileExists{microtype.sty}{% use microtype if available
+  \usepackage[]{microtype}
+  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\makeatletter
+\@ifundefined{KOMAClassName}{% if non-KOMA class
+  \IfFileExists{parskip.sty}{%
+    \usepackage{parskip}
+  }{% else
+    \setlength{\parindent}{0pt}
+    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
+}{% if KOMA class
+  \KOMAoptions{parskip=half}}
+\makeatother
+\usepackage{xcolor}
+\usepackage[margin=1in]{geometry}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+\setlength{\emergencystretch}{3em} % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\newlength{\cslhangindent}
+\setlength{\cslhangindent}{1.5em}
+\newlength{\csllabelwidth}
+\setlength{\csllabelwidth}{3em}
+\newlength{\cslentryspacingunit} % times entry-spacing
+\setlength{\cslentryspacingunit}{\parskip}
+\newenvironment{CSLReferences}[2] % #1 hanging-ident, #2 entry spacing
+ {% don't indent paragraphs
+  \setlength{\parindent}{0pt}
+  % turn on hanging indent if param 1 is 1
+  \ifodd #1
+  \let\oldpar\par
+  \def\par{\hangindent=\cslhangindent\oldpar}
+  \fi
+  % set entry spacing
+  \setlength{\parskip}{#2\cslentryspacingunit}
+ }%
+ {}
+\usepackage{calc}
+\newcommand{\CSLBlock}[1]{#1\hfill\break}
+\newcommand{\CSLLeftMargin}[1]{\parbox[t]{\csllabelwidth}{#1}}
+\newcommand{\CSLRightInline}[1]{\parbox[t]{\linewidth - \csllabelwidth}{#1}\break}
+\newcommand{\CSLIndent}[1]{\hspace{\cslhangindent}#1}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\ifLuaTeX
+  \usepackage{selnolig}  % disable illegal ligatures
+\fi
+\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
+\urlstyle{same}
+\hypersetup{
+  pdftitle={Placebo-Controlled Efficacy Analysis of the COVID-19 Vaccine},
+  pdfauthor={Oliver Brown, Josie Czeskleba, Luke VanHouten},
+  hidelinks,
+  pdfcreator={LaTeX via pandoc}}
+
+\title{Placebo-Controlled Efficacy Analysis of the COVID-19 Vaccine}
+\usepackage{etoolbox}
+\makeatletter
+\providecommand{\subtitle}[1]{% add subtitle to \maketitle
+  \apptocmd{\@title}{\par {\large #1 \par}}{}{}
+}
+\makeatother
+\subtitle{Spring 2024}
+\author{Oliver Brown, Josie Czeskleba, Luke VanHouten}
+\date{}
+
+\begin{document}
+\maketitle
+
+\hypertarget{abstract}{%
+\section{Abstract}\label{abstract}}
+
+The COVID-19 pandemic, necessitated the development of effective
+vaccines to mitigate severe health outcomes. This study evaluates the
+efficacy of the Pfizer-BioNTech BNT162b2 mRNA vaccine, using statistical
+methods such as maximum likelihood estimation (MLE), likelihood ratio
+tests, and bootstrapping. Analyzing data from a placebo-controlled study
+with 170 COVID-19 cases, we estimated the vaccine efficacy to be
+approximately 95\%, significantly surpassing the FDA's minimum efficacy
+requirement of 30\%. The MLE provided an efficacy estimate of 0.9506,
+with a 95\% confidence interval ranging from 91.55\% to 98.57\%.
+Bootstrapping with 10,000 iterations confirmed the robustness of this
+estimate, yielding similar results. Our findings, demonstrate the
+vaccine's high effectiveness in preventing COVID-19.
+
+\hypertarget{keywords}{%
+\section{Keywords}\label{keywords}}
+
+Efficacy, Likelihood, COVID-19, Bootstrap, Estimators
+
+\hypertarget{introduction}{%
+\section{Introduction}\label{introduction}}
+
+The COVID-19 pandemic has impacted millions globally, since the World
+Health Organization declared it a global pandemic on March 11th, 2020.
+Sensitive groups are at high risk of COVID-19 and its complications.
+Moreover, recent studies have shown that long-term COVID-19 or
+post-COVID-19 symptoms make individuals more susceptible to additional
+health conditions like diabetes, heart conditions, and neurological
+conditions (CDC). Therefore a safe and effective vaccine is imperative
+to global health.
+
+In December 2020, Pfizer and BioNTech received FDA Emergency Use
+Authorization for their two-dose BNT162b2 COVID-19 mRNA vaccine. The
+approval was based on a placebo-controlled, observer-blinded study
+involving participants aged 16 and older who were randomly assigned to
+receive either the placebo or the vaccine. The data provided leverage to
+prove that the BNT162b2 vaccine efficacy exceeds the FDA-required
+efficacy of 30\%.(Polack et al. 2020).
+
+Given the FDA's minimum efficacy requirement of 30\%, this paper focuses
+on the statistical analysis of the vaccine's efficacy. We will utilize
+hypothesis testing, bootstrapping, and maximum likelihood estimation to
+evaluate the data. The thoroughness of this analysis is essential for
+ensuring reliable and valid findings, which will guide public health
+decisions based on robust evidence.
+
+\hypertarget{statistical-methods}{%
+\section{Statistical Methods}\label{statistical-methods}}
+
+The data for positive and negative tests between the placebo and vaccine
+groups is taken from the previous research on the vaccine efficacy
+(Polack et al. 2020):
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{c|p{1in}|p{1in}|p{1in}}
+    Test & Positive & Negative & Total \\ \hline
+    Vaccine & 8 & 17403 & 17411 \\ \hline
+    Placebo & 162 & 17349 & 17511 \\ \hline
+    Total & 170 & 34752 & 34922 \\ \hline
+    \end{tabular}
+\end{table}
+
+\newpage
+
+While this is a rather simple dataset, we can use a stacked bar plot to
+better visualize it:
+
+\includegraphics{Writeup_files/figure-latex/stacked barplot-1.pdf}
+
+We denote the random variable \(T\) as the number of vaccinated
+individuals from the 170 COVID cases.
+
+\[ T \sim Binom(n = 170,\pi) \]
+
+We can define
+\(\pi = \textrm{P(Vaccine|COVID)} = \frac{\pi_1}{\pi_1 + \pi_2}\), given
+that the sample sizes for the vaccine and placebo groups are
+approximately equal. Here, \(\pi_1\) is the proportion of vaccinated
+individuals who got COVID and \(\pi_2\) is the proportion of
+unvaccinated individuals who got COVID. Moreover, we define the vaccine
+efficacy as \(\psi = \frac{1-2\pi}{1-\pi}\) (Senn 2021). We can then
+formulate the following hypothesis test based on the FDA's suggested
+efficacy of at least 30\%:
+
+\[ H_0: \psi_0 = 0.3 \] \[ H_1: \psi_0 \geq 0.3 \]
+
+We will use a maximum likelihood estimator to conduct a likelihood ratio
+test as well as bootstrapped confidence intervals to test our
+hypothesis.
+
+\hypertarget{maximum-likelihood-estimator}{%
+\subsection{Maximum Likelihood
+Estimator}\label{maximum-likelihood-estimator}}
+
+The first method we used to analyze the BNT162b2 vaccine efficacy is
+maximum likelihood estimation. We found the maximum likelihood estimate
+for our efficacy parameter \(\psi\), which we can call
+\(\hat{\psi}^{mle}_0\). To calculate this estimator, we can first write
+the likelihood function of \(\pi\) based on the PDF of \(T\):
+
+\[ L(\pi) = \binom{n}{t}\pi^t(1 - \pi)^{n - t} \]
+
+Then we write \(\pi\) in the form \(\pi = g(\psi)\), given that
+\(\psi = \frac{1 - 2\pi}{1 - \pi}\). We thus have that
+\(\psi - \psi\pi = 1 - 2\pi\), which becomes
+\(2\pi - \psi\pi = 1 - \psi\), which becomes:
+
+\[ \pi = \frac{1 - \psi}{2 - \psi} \]
+
+Because \(\psi\) is the parameter we want to make our estimator,we can
+rewrite our likelihood function in terms of \(\psi\), still based on the
+PDF of \(T\) for \(t_{obs} = 8\):
+
+\[ L(\psi) = L(g(\psi)) = L\left(\frac{1 - \psi}{2 - \psi}\right) = \binom{n}{t}\left(\frac{1 - \psi}{2 - \psi}\right)^t\left(1 - \left(\frac{1-\psi}{2-\psi}\right)\right)^{n - t} = \binom{n}{t}\left(\frac{1 - \psi}{2 - \psi}\right)^t\left(\frac{1}{2 - \psi}\right)^{n - t} \]
+
+Mathematically, it is difficult to do much with just this function, so
+we can log-transform it to convert it from a product to a sum. We can
+calculate the log-likelihood function for \(\psi\) as shown here:
+
+\[ \ell(\psi) = \ln(L(\psi) = \ln\left(\binom{n}{t}\right) + t\ln(1 - \psi) - t\ln(2 - \psi) - (n - t)\ln(2 - \psi) = \ln\left(\binom{n}{t}\right) + t\ln(1 - \psi) - n\ln(2 - \psi) \]
+
+Our estimator is defined as where the log-likelihood function is
+maximized by the parameter \(\psi\), and we can find this by computing
+\(\underset{\psi}{\arg\max} \ \ell(\psi | t)\), or in other words, by
+taking the derivative of this function and setting it equal to 0. So we
+can calculate \(\ell'(\psi) = 0\) here:
+
+\[ \frac{d}{d\psi} \ell(\psi) = \frac{d}{d\psi} \ln\left(\binom{n}{t}\right) + \frac{d}{d\psi} t\ln(1 - \psi) - \frac{d}{d\psi} n\ln(2 - \psi) = \frac{n}{2 - \psi} - \frac{t}{1 - \psi} = 0 \]
+
+We can then solve \(\frac{n}{2 - \psi} = \frac{t}{1 - \psi}\). We get
+that \(n - n\psi = 2t - t\psi\), which becomes
+\(t\psi - n\psi = 2t - n\). Assuming that this critical point is a
+maximum, we have that our estimator estimator is
+\(\widehat{\psi}^{mle}_0 = \frac{2t - n}{t - n}\). We cannot use the
+estimator on its own to make much inference about our hypothesis.
+However, e can use our MLE to perform a likelihood ratio test, defined
+as
+\(W = 2\left(\ell\left(\hat{\psi}^{mle}_0\right) - \ell\left(\psi^{null}_0\right)\right)\).
+A small \(W\) corresponds with statistical significance for rejecting
+the null hypothesis, and vice versa. For a sufficiently sized \(n\),
+which we have as \(n = 170\), the distribution \(W \sim \chi^2_1\)
+holds, letting us compute a P-value for our hypothesis. We can compute
+this value of \(W\) here as:
+
+\[ W = 2\left(\left(\ln\left(\binom{n}{t}\right) + t\ln\left(1 - \widehat{\psi}^{mle}_0\right) - n\ln\left(2 - \widehat{\psi}^{mle}_0\right)\right) - \left(\ln\left(\binom{n}{t}\right) + t\ln\left(1 - \psi^{null}_0\right) - n\ln\left(2 - \psi^{null}_0\right)\right)\right)\]
+
+This becomes:
+
+\[ W = 2t\ln\left(1 - \widehat{\psi}^{mle}_0\right) - 2n\ln\left(2 - \widehat{\psi}^{mle}_0\right) - 2t\ln\left(1 - \psi^{null}_0\right) + 2n\ln\left(2 - \psi^{null}_0\right) \]
+
+Finally, we can set up an equation to find a 95\% confidence interval
+for our parameter \(\psi\):
+
+\[ \widehat{\psi}^{\text{mle}}_0 \pm 1.96 \sqrt{\frac{-1}{\ell''(\widehat{\psi}^{\text{mle}}_0)}} = \widehat{\psi}^{\text{mle}}_0 \pm 1.96 \sqrt{\frac{-1}{\frac{n}{(2 - \widehat{\psi}^{\text{mle}}_0)^2} - \frac{t}{(1 - \widehat{\psi}^{\text{mle}}_0)^2}}} \]
+
+\hypertarget{bootstrap}{%
+\subsection{Bootstrap}\label{bootstrap}}
+
+Bootstrapping is a powerful statistical technique used to estimate the
+sampling distribution of a statistic by repeatedly resampling with
+replacement from the original data. This method allows for the
+assessment of the variability and accuracy of the statistic without
+relying on strong parametric assumptions. By generating numerous
+resampled sets of data, bootstrapping creates a distribution of the
+statistic of interest, which can be used to derive confidence intervals.
+
+In our analysis, bootstrapping is applied to estimate the efficacy of
+the BNT162b2 vaccine. By generating multiple resampled datasets from the
+original data, we can repeatedly calculate the vaccine efficacy and
+construct a distribution of these efficacy estimates. This distribution
+provides valuable insights into the range, variability, and confidence
+intervals of the vaccine's effectiveness. Using bootstrapping, we can
+assess the reliability of the observed efficacy, ensuring that the
+conclusions drawn from the data are well-supported by a rigorous
+statistical framework.
+
+In this analysis, we conducted a bootstrap resampling procedure to
+evaluate the distribution of the psi values, a derived statistic from
+the proportions of COVID cases in vaccine and placebo groups. The
+bootstrap technique involves repeatedly sampling with replacement from
+the original data to create numerous simulated samples. This method
+helps in estimating the sampling distribution of the statistic of
+interest and provides insights into its variability and confidence
+intervals.
+
+The proportions of COVID cases in each group \((\texttt{prop_vaccine}\)
+and \(\texttt{prop_placebo})\) were calculated using the provided data.
+
+\[ \text{Observed }\pi = \frac{\text{Observed }\pi_1}{\text{Observed }\pi_1 + \text{Observed }\pi_2} \]
+
+Using these proportions, the observed psi value was computed using the
+formula:
+
+\[\text{Observed } \psi = \frac{1 - 2 \times \text{Observed } \pi}{1 - \text{Observed } \pi}\]
+
+where \(\text{observed_pi}\) is the proportion of COVID cases in the
+vaccine group relative to the combined total of COVID cases in both
+groups.
+
+A total of 10,000 bootstrap samples were generated. For each iteration,
+random samples were drawn with replacement from the \(\texttt{vaccine}\)
+and \(\texttt{placebo}\) groups based on their respective proportions.
+The bootstrap psi value was then calculated for each resampled dataset.
+This process generated a distribution of psi values, stored in
+\(\texttt{bootstrap_df}\).
+
+The summary statistics of the bootstrap distribution, including the
+mean, standard deviation, and 95\% confidence intervals, were
+calculated. The critical values for the confidence intervals were
+determined using the quantiles of the normal distribution:
+
+\[\text{Lower critical value} = E[\psi]- Z_{0.975} \times SD[\psi]\]
+
+\[\text{Upper critical value} = E[\psi] + Z_{0.975} \times SD[\psi]\]
+
+The analysis involved calculating the proportions of COVID cases
+(\(\pi\)), deriving psi values from these proportions, and using the
+bootstrap method to generate 10,000 samples. This allowed for estimation
+of the mean, standard deviation, and 95\% confidence intervals of the
+psi values.
+
+\hypertarget{results}{%
+\section{Results}\label{results}}
+
+For our MLE, we can plug in \(t_{obs} = 8\) and \(n = 170\) to
+\(\widehat{\psi}^{mle}_0 = \frac{2t - n}{t - n}\), we get
+\(\widehat{\psi}^{mle}_0 = \frac{16 - 170}{8 - 170} = \frac{77}{81} = 0.9506\).
+We can also use the Newton Raphson method to estimate \(\psi\) to get
+the same value, shown in the appendix.
+
+For the likelihood ratio test, we can plug in our values
+\(\widehat{\psi}^{mle}_0 = 0.9506\), \(\psi^{null}_0 = 0.3\), \(t = 8\),
+and \(n = 170\) to our W to get:
+
+\[ W = 2(8)\ln\left(1 - 0.9506\right) - 2(170)\ln\left(2 - 0.9506\right) - 2(8)\ln\left(1 - 0.3\right) + 2(170)\ln\left(2 - 0.3\right) = 121.6012 \]
+
+Given our sample size is large we know \(W \sim \chi^2_1\). Therefore,
+we can calculate P-value for our hypothesis as
+\(P(W \geq 121.6012) = 0\). This P-value is zero, so we can reject the
+null hypothesis under our likelihood ratio test that the COVID-19
+vaccine efficacy is 30\%.
+
+Finally, we can use our MLE estimator to calculate a 95\% confidence
+interval for \(\psi\):
+
+\[ 0.9506 \pm 1.96\sqrt{\frac{-1}{-3124.317}} = 0.9506 \pm 0.0351\]
+
+We are 95\% confident that the true efficacy of the BNT162b2 vaccine
+lies in the interval {[}91.55\%, 98.57\%{]}. This supports our findings
+in the likelihood ratio test. There is convincing evidence that the true
+efficacy exceeds the FDA-required efficacy of 30\%.
+
+Furthermore, the vaccine efficacy (\(\psi\)) for the BNT162b2 vaccine
+was estimated using a bootstrap method with 10,000 iterations, ensuring
+accurate and stable estimates. The observed vaccine efficacy from the
+original data was calculated using the given formula, resulting in an
+estimated \(\psi\) of approximately 95\%.
+
+The bootstrap resampling provided a distribution of \(\psi\) values,
+from which the mean efficacy was estimated to be 0.9508 with a standard
+deviation of 0.0178. The 95\% confidence interval for the vaccine
+efficacy, derived from the bootstrap samples, ranged from approximately
+91.59\% to 98.58\%. This confidence interval is quite narrow, indicating
+a high level of precision in the efficacy estimate.
+
+The histogram of the bootstrap \(\psi\) values, along with the
+confidence intervals, confirms that the estimated efficacy is
+consistently around 95\%, supporting the robustness of the estimate.
+Furthermore, the probability that the vaccine efficacy exceeds 30\% is
+1, with the calculated p-value being effectively zero
+(\(3.74 \times 10^{-292}\)). This overwhelming evidence suggests that
+the vaccine significantly reduces the risk of infection compared to the
+placebo.
+
+In summary, the results from the bootstrap analysis strongly support the
+conclusion that the BNT162b2 vaccine is highly effective, with an
+estimated efficacy of around 95\%. The narrow confidence interval and
+extremely low p-value reinforce the reliability and significance of the
+vaccine's protective effect against COVID-19.
+
+\hypertarget{conclusion}{%
+\section{Conclusion}\label{conclusion}}
+
+In conclusion, we can say with great confidence that the Pfizer-BioNTech
+BNT162b2 COVID-19 vaccine is effective at preventing positive tests of
+the disease, as the vaccine efficacy is much greater than the FDA target
+value of 30\%. With 95.06\% efficacy (based off of the maxmimum
+likelihood estimator for our binomial distribution of positive tests),
+this COVID-19 vaccine should be recommend for general use for disease
+prevention. We conducted a variety of statistical testing to back up
+this claim, such as the likelihood ratio test and boostrapped efficacy
+paramters, which both netted extremely small P-values as well as tight
+confidence intervals around the estimate for the vaccine efficacy. Our
+results match the findings of other research on this vaccine's efficacy,
+where Bayesian estimates were used to show that the vaccine is
+sufficiently effective (Polack et al. 2020). Next steps for this
+research would be to utilize more estimators to reach this conclusion,
+such as the method of moments estimator as well as to corroborate the
+previous research using Bayesian methods, such as the Beta Binomial
+model (Lee and Sabavala 1987). Other next steps would be to use these
+methods to identify vaccine efficacy in vaccines for other diseases,
+especially newly developed ones.
+
+\hypertarget{references}{%
+\section{References}\label{references}}
+
+\hypertarget{refs}{}
+\begin{CSLReferences}{1}{0}
+\leavevmode\vadjust pre{\hypertarget{ref-longcovid}{}}%
+CDC. {``{P}ost-{C}{O}{V}{I}{D} {C}onditions --- Cdc.gov.''}
+\url{https://www.cdc.gov/coronavirus/2019-ncov/long-term-effects/index.html}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-BetaBinomial}{}}%
+Lee, Jack C., and Darius J. Sabavala. 1987. {``Bayesian Estimation and
+Prediction for the Beta-Binomial Model.''} \emph{Journal of Business \&
+Economic Statistics} 5 (3): 357--67.
+\url{https://doi.org/10.2307/1391611}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-COVIDpaper}{}}%
+Polack, Fernando P., Stephen J. Thomas, Nicholas Kitchin, Judith
+Absalon, Alejandra Gurtman, Stephen Lockhart, John L. Perez, et al.
+2020. {``Safety and Efficacy of the BNT162b2 mRNA Covid-19 Vaccine.''}
+\emph{New England Journal of Medicine} 383 (27): 2603--15.
+\url{https://doi.org/10.1056/NEJMoa2034577}.
+
+\leavevmode\vadjust pre{\hypertarget{ref-errorstatistics}{}}%
+Senn, Stephen. 2021. {``S. {Senn}: {`{Beta} Testing'}: {The}
+{Pfizer}/{BioNTech} Statistical Analysis of Their {Covid}-19 Vaccine
+Trial (Guest Post).''} \emph{Error Statistics Philosophy}.
+\url{https://errorstatistics.com/2021/01/17/s-senn-beta-testing-the-pfizer-biontech-statistical-analysis-of-their-covid-19-vaccine-trial-guest-post/}.
+
+\end{CSLReferences}
+
+\hypertarget{appendix}{%
+\section{Appendix}\label{appendix}}
+
+\hypertarget{visualizations}{%
+\subsection{Visualizations}\label{visualizations}}
+
+\hypertarget{stacked-barplot-code}{%
+\subsubsection{Stacked Barplot Code}\label{stacked-barplot-code}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(data\_melted, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ Test, }\AttributeTok{y =}\NormalTok{ value, }\AttributeTok{fill =}\NormalTok{ variable)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_bar}\NormalTok{(}\AttributeTok{stat =} \StringTok{"identity"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{label =}\NormalTok{ value), }
+            \AttributeTok{position =} \FunctionTok{position\_stack}\NormalTok{(}\AttributeTok{vjust =} \FloatTok{0.5}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{x =} \StringTok{"Test"}\NormalTok{, }\AttributeTok{y =} \StringTok{"Number of Participants"}\NormalTok{, }
+       \AttributeTok{title =} \StringTok{"COVID Infection for Vaccine and Placebo Groups"}\NormalTok{) }
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{newton-rhapson-mle-approximation}{%
+\subsection{Newton Rhapson MLE
+Approximation}\label{newton-rhapson-mle-approximation}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{loglik }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(psi, T, n)\{}
+  \ControlFlowTok{if}\NormalTok{ (psi }\SpecialCharTok{\textgreater{}} \DecValTok{1} \SpecialCharTok{|}\NormalTok{ psi }\SpecialCharTok{\textless{}} \DecValTok{0}\NormalTok{) }
+    \FunctionTok{return}\NormalTok{(}\ConstantTok{NA}\NormalTok{)}
+  \ControlFlowTok{else}
+    \FunctionTok{return}\NormalTok{(}\FunctionTok{log}\NormalTok{(}\FunctionTok{choose}\NormalTok{(n, T)) }\SpecialCharTok{+}\NormalTok{ (T }\SpecialCharTok{*} \FunctionTok{log}\NormalTok{(}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ psi)) }\SpecialCharTok{{-}}\NormalTok{ (n }\SpecialCharTok{*} \FunctionTok{log}\NormalTok{(}\DecValTok{2} \SpecialCharTok{{-}}\NormalTok{ psi)))}
+\NormalTok{\}}
+
+\NormalTok{estimation }\OtherTok{\textless{}{-}} \FunctionTok{maxLik2}\NormalTok{(}\AttributeTok{loglik =}\NormalTok{ loglik, }\AttributeTok{start =} \FloatTok{0.55}\NormalTok{, }\AttributeTok{method =} \StringTok{"NR"}\NormalTok{, }\AttributeTok{tol =} \FloatTok{1e{-}4}\NormalTok{, }
+                      \AttributeTok{T =} \DecValTok{8}\NormalTok{, }\AttributeTok{n =} \DecValTok{170}\NormalTok{)}
+
+\FunctionTok{print}\NormalTok{(estimation)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Maximum Likelihood estimation
+## Newton-Raphson maximisation, 6 iterations
+## Return code 2: successive function values within tolerance limit (tol)
+## Log-Likelihood: -1.944994 (1 free parameter(s))
+## Estimate(s): 0.9506174
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{plot}\NormalTok{(estimation) }\SpecialCharTok{+}
+    \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Second order approximation to the Log{-}Likelihood Function"}\NormalTok{, }
+         \AttributeTok{x =} \FunctionTok{expression}\NormalTok{(psi))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Writeup_files/figure-latex/newton rhapson-1.pdf}
+
+\hypertarget{likelihood-ratio-test-calculation}{%
+\subsection{Likelihood Ratio Test
+Calculation}\label{likelihood-ratio-test-calculation}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{W }\OtherTok{=}\NormalTok{ (}\DecValTok{2} \SpecialCharTok{*} \DecValTok{8} \SpecialCharTok{*} \FunctionTok{log}\NormalTok{(}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ (}\DecValTok{77} \SpecialCharTok{/} \DecValTok{81}\NormalTok{))) }\SpecialCharTok{{-}}\NormalTok{ (}\DecValTok{2} \SpecialCharTok{*} \DecValTok{170} \SpecialCharTok{*} \FunctionTok{log}\NormalTok{(}\DecValTok{2} \SpecialCharTok{{-}}\NormalTok{ (}\DecValTok{77} \SpecialCharTok{/} \DecValTok{81}\NormalTok{))) }\SpecialCharTok{{-}}
+\NormalTok{    (}\DecValTok{2} \SpecialCharTok{*} \DecValTok{8} \SpecialCharTok{*} \FunctionTok{log}\NormalTok{(}\DecValTok{1} \SpecialCharTok{{-}} \FloatTok{0.3}\NormalTok{)) }\SpecialCharTok{+}\NormalTok{ (}\DecValTok{2} \SpecialCharTok{*} \DecValTok{170} \SpecialCharTok{*} \FunctionTok{log}\NormalTok{(}\DecValTok{2} \SpecialCharTok{{-}} \FloatTok{0.3}\NormalTok{))}
+
+\NormalTok{p\_value }\OtherTok{\textless{}{-}} \FunctionTok{pchisq}\NormalTok{(}\AttributeTok{q =}\NormalTok{ W, }\AttributeTok{df =} \DecValTok{1}\NormalTok{, }\AttributeTok{lower.tail=}\NormalTok{F)}
+\end{Highlighting}
+\end{Shaded}
+
+Here, \(W\) is 121.6012 and the corresponding P-value is
+\ensuremath{2.8222944\times 10^{-28}}.
+
+\hypertarget{mle-confidence-interval-calculation}{%
+\subsection{MLE Confidence interval
+calculation}\label{mle-confidence-interval-calculation}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{se }\OtherTok{\textless{}{-}} \FunctionTok{sqrt}\NormalTok{(}\SpecialCharTok{{-}}\DecValTok{1} \SpecialCharTok{/}\NormalTok{ ((}\DecValTok{170} \SpecialCharTok{/}\NormalTok{ (}\DecValTok{2} \SpecialCharTok{{-}} \FloatTok{0.9506}\NormalTok{)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{) }\SpecialCharTok{{-}}\NormalTok{ (}\DecValTok{8} \SpecialCharTok{/}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}} \FloatTok{0.9506}\NormalTok{)}\SpecialCharTok{\^{}}\DecValTok{2}\NormalTok{)))}
+
+\NormalTok{upper\_lim }\OtherTok{\textless{}{-}} \FloatTok{0.9506} \SpecialCharTok{+} \FloatTok{1.96} \SpecialCharTok{*}\NormalTok{ se}
+\NormalTok{lower\_lim }\OtherTok{\textless{}{-}} \FloatTok{0.9506} \SpecialCharTok{{-}} \FloatTok{1.96} \SpecialCharTok{*}\NormalTok{ se}
+\end{Highlighting}
+\end{Shaded}
+
+The calculated confidence interval is {[}0.9155, 0.9856{]} with a
+standard error of 0.0179.
+
+\hypertarget{bootstrap-1}{%
+\subsection{Bootstrap}\label{bootstrap-1}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{data }\OtherTok{\textless{}{-}} \FunctionTok{read\_csv}\NormalTok{(}\StringTok{"data.csv"}\NormalTok{, }\AttributeTok{show\_col\_types =}\NormalTok{ F)}
+
+\FunctionTok{library}\NormalTok{(boot)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## 
+## Attaching package: 'boot'
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:mosaic':
+## 
+##     logit
+\end{verbatim}
+
+\begin{verbatim}
+## The following object is masked from 'package:lattice':
+## 
+##     melanoma
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{library}\NormalTok{(readr)}
+\FunctionTok{library}\NormalTok{(tidyverse)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{vaccine }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(Test }\SpecialCharTok{==} \StringTok{"Vaccine"}\NormalTok{)}
+
+\NormalTok{placebo }\OtherTok{\textless{}{-}}\NormalTok{ data }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{filter}\NormalTok{(Test }\SpecialCharTok{==} \StringTok{"Placebo"}\NormalTok{)}
+
+\NormalTok{prop\_vaccine }\OtherTok{\textless{}{-}}\NormalTok{ vaccine}\SpecialCharTok{$}\NormalTok{COVID }\SpecialCharTok{/}\NormalTok{ (vaccine}\SpecialCharTok{$}\NormalTok{COVID }\SpecialCharTok{+}\NormalTok{ vaccine}\SpecialCharTok{$}\NormalTok{No\_COVID)}
+\NormalTok{prop\_placebo }\OtherTok{\textless{}{-}}\NormalTok{ placebo}\SpecialCharTok{$}\NormalTok{COVID }\SpecialCharTok{/}\NormalTok{ (placebo}\SpecialCharTok{$}\NormalTok{COVID }\SpecialCharTok{+}\NormalTok{ placebo}\SpecialCharTok{$}\NormalTok{No\_COVID)}
+
+\NormalTok{observed\_pi }\OtherTok{\textless{}{-}}\NormalTok{ prop\_vaccine}\SpecialCharTok{/}\NormalTok{(prop\_vaccine }\SpecialCharTok{+}\NormalTok{ prop\_placebo)}
+
+\NormalTok{observed\_psi }\OtherTok{\textless{}{-}}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}} \DecValTok{2}\SpecialCharTok{*}\NormalTok{observed\_pi)}\SpecialCharTok{/}\NormalTok{(}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ observed\_pi)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{n\_bootstrap }\OtherTok{\textless{}{-}} \DecValTok{10000}
+\NormalTok{bootstrap\_psis }\OtherTok{\textless{}{-}} \FunctionTok{numeric}\NormalTok{(n\_bootstrap)}
+\FunctionTok{set.seed}\NormalTok{(}\DecValTok{123}\NormalTok{)}
+
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{n\_bootstrap) \{}
+\NormalTok{  vaccine\_sample }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{size =}\NormalTok{ vaccine}\SpecialCharTok{$}\NormalTok{COVID }\SpecialCharTok{+}\NormalTok{ vaccine}\SpecialCharTok{$}\NormalTok{No\_COVID, }\AttributeTok{replace =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{prob =} \FunctionTok{c}\NormalTok{(}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ prop\_vaccine, prop\_vaccine))}
+\NormalTok{  placebo\_sample }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(}\FunctionTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{1}\NormalTok{), }\AttributeTok{size =}\NormalTok{ placebo}\SpecialCharTok{$}\NormalTok{COVID }\SpecialCharTok{+}\NormalTok{ placebo}\SpecialCharTok{$}\NormalTok{No\_COVID, }\AttributeTok{replace =} \ConstantTok{TRUE}\NormalTok{, }\AttributeTok{prob =} \FunctionTok{c}\NormalTok{(}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ prop\_placebo, prop\_placebo))}
+  
+\NormalTok{  prop\_vaccine\_boot }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(vaccine\_sample)}
+\NormalTok{  prop\_placebo\_boot }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(placebo\_sample)}
+  
+\NormalTok{  bootstrap\_pi }\OtherTok{\textless{}{-}}\NormalTok{ prop\_vaccine\_boot }\SpecialCharTok{/}\NormalTok{ (prop\_vaccine\_boot }\SpecialCharTok{+}\NormalTok{ prop\_placebo\_boot)}
+  
+\NormalTok{  bootstrap\_psis[i] }\OtherTok{\textless{}{-}}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}} \DecValTok{2} \SpecialCharTok{*}\NormalTok{ bootstrap\_pi) }\SpecialCharTok{/}\NormalTok{ (}\DecValTok{1} \SpecialCharTok{{-}}\NormalTok{ bootstrap\_pi)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bootstrap\_df }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\AttributeTok{psi =}\NormalTok{ bootstrap\_psis)}
+
+\NormalTok{bootstrap\_summary }\OtherTok{\textless{}{-}}\NormalTok{ bootstrap\_df }\SpecialCharTok{\%\textgreater{}\%}
+  \FunctionTok{summarise}\NormalTok{(}\AttributeTok{n =} \FunctionTok{n}\NormalTok{(), }
+            \AttributeTok{mean =} \FunctionTok{mean}\NormalTok{(psi), }
+            \AttributeTok{sd =} \FunctionTok{sd}\NormalTok{(psi), }
+            \AttributeTok{lower\_critical\_value =}\NormalTok{ mean }\SpecialCharTok{{-}} \FunctionTok{qnorm}\NormalTok{(}\FloatTok{0.975}\NormalTok{)}\SpecialCharTok{*}\NormalTok{sd, }
+            \AttributeTok{upper\_critical\_value =}\NormalTok{  mean }\SpecialCharTok{+} \FunctionTok{qnorm}\NormalTok{(}\FloatTok{0.975}\NormalTok{)}\SpecialCharTok{*}\NormalTok{sd)}
+
+\NormalTok{lower\_critical\_value }\OtherTok{\textless{}{-}}\NormalTok{ bootstrap\_summary}\SpecialCharTok{$}\NormalTok{lower\_critical\_value}
+\NormalTok{upper\_critical\_value }\OtherTok{\textless{}{-}}\NormalTok{ bootstrap\_summary}\SpecialCharTok{$}\NormalTok{upper\_critical\_value}
+
+\NormalTok{bootstrap\_summary}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       n      mean         sd lower_critical_value upper_critical_value
+## 1 10000 0.9500209 0.01801763             0.914707            0.9853348
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{ggplot}\NormalTok{(bootstrap\_df, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ psi)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_histogram}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =} \FunctionTok{after\_stat}\NormalTok{(density)), }
+                 \AttributeTok{bins =} \FunctionTok{round}\NormalTok{(}\FunctionTok{log}\NormalTok{(}\FunctionTok{length}\NormalTok{(bootstrap\_df}\SpecialCharTok{$}\NormalTok{psi), }\AttributeTok{base =} \DecValTok{2}\NormalTok{)), }
+                 \AttributeTok{fill =} \StringTok{"mediumpurple"}\NormalTok{, }
+                 \AttributeTok{color =} \StringTok{"black"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Histogram of Bootstrap Psi Values"}\NormalTok{, }\AttributeTok{x =} \StringTok{"Psi"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{geom\_vline}\NormalTok{(}\AttributeTok{xintercept =}\NormalTok{ observed\_psi, }
+             \AttributeTok{linetype =} \StringTok{"solid"}\NormalTok{, }
+             \AttributeTok{color =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{geom\_vline}\NormalTok{(}\AttributeTok{xintercept =}\NormalTok{ bootstrap\_summary}\SpecialCharTok{$}\NormalTok{upper\_critical\_value, }
+             \AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{, }
+             \AttributeTok{color =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{geom\_vline}\NormalTok{(}\AttributeTok{xintercept =}\NormalTok{ bootstrap\_summary}\SpecialCharTok{$}\NormalTok{lower\_critical\_value, }
+             \AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{, }
+             \AttributeTok{color =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{scale\_y\_continuous}\NormalTok{(}\AttributeTok{labels =}\NormalTok{ scales}\SpecialCharTok{::}\FunctionTok{number\_format}\NormalTok{(}\AttributeTok{accuracy =} \FloatTok{0.1}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{)) }\SpecialCharTok{+}
+  \FunctionTok{stat\_function}\NormalTok{(}\AttributeTok{fun =}\NormalTok{ dnorm, }\AttributeTok{args =} \FunctionTok{list}\NormalTok{(}\AttributeTok{mean =}\NormalTok{ bootstrap\_summary}\SpecialCharTok{$}\NormalTok{mean, }\AttributeTok{sd =}\NormalTok{ bootstrap\_summary}\SpecialCharTok{$}\NormalTok{sd), }\AttributeTok{color =} \StringTok{"blue"}\NormalTok{, }\AttributeTok{size =} \DecValTok{1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Writeup_files/figure-latex/unnamed-chunk-5-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{ci\_data }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}
+  \AttributeTok{Iteration =} \DecValTok{1}\SpecialCharTok{:}\NormalTok{n\_bootstrap,}
+  \AttributeTok{Lower =} \FunctionTok{numeric}\NormalTok{(n\_bootstrap),}
+  \AttributeTok{Upper =} \FunctionTok{numeric}\NormalTok{(n\_bootstrap)}
+\NormalTok{)}
+
+\ControlFlowTok{for}\NormalTok{ (i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{n\_bootstrap) \{}
+\NormalTok{  sample\_psis }\OtherTok{\textless{}{-}} \FunctionTok{sample}\NormalTok{(bootstrap\_psis, n\_bootstrap, }\AttributeTok{replace =} \ConstantTok{TRUE}\NormalTok{)}
+\NormalTok{  ci\_data}\SpecialCharTok{$}\NormalTok{Lower[i] }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(sample\_psis) }\SpecialCharTok{{-}} \FunctionTok{qnorm}\NormalTok{(}\FloatTok{0.975}\NormalTok{)}\SpecialCharTok{*}\FunctionTok{sd}\NormalTok{(sample\_psis)}
+\NormalTok{  ci\_data}\SpecialCharTok{$}\NormalTok{Upper[i] }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(sample\_psis) }\SpecialCharTok{+} \FunctionTok{qnorm}\NormalTok{(}\FloatTok{0.975}\NormalTok{)}\SpecialCharTok{*}\FunctionTok{sd}\NormalTok{(sample\_psis)}
+\NormalTok{  ci\_data}\SpecialCharTok{$}\NormalTok{Mean[i] }\OtherTok{\textless{}{-}} \FunctionTok{mean}\NormalTok{(sample\_psis)}
+\NormalTok{\}}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{plot\_data }\OtherTok{\textless{}{-}}\NormalTok{ ci\_data[}\FunctionTok{seq}\NormalTok{(}\DecValTok{1}\NormalTok{, n\_bootstrap, }\AttributeTok{by =} \DecValTok{150}\NormalTok{), ]}
+
+\FunctionTok{ggplot}\NormalTok{(plot\_data, }\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ Iteration)) }\SpecialCharTok{+}
+  \FunctionTok{geom\_segment}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{yend =}\NormalTok{ Iteration, }\AttributeTok{x =}\NormalTok{ Lower, }\AttributeTok{xend =}\NormalTok{ Upper), }\AttributeTok{color =} \StringTok{"navy"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_point}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{y =}\NormalTok{ Iteration, }\AttributeTok{x =}\NormalTok{ Mean), }\AttributeTok{color =} \StringTok{"navy"}\NormalTok{)}\SpecialCharTok{+}
+  \FunctionTok{geom\_vline}\NormalTok{(}\AttributeTok{xintercept =}\NormalTok{ lower\_critical\_value, }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{, }\AttributeTok{color =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_vline}\NormalTok{(}\AttributeTok{xintercept =}\NormalTok{ upper\_critical\_value, }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{, }\AttributeTok{color =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ lower\_critical\_value }\SpecialCharTok{+} \FloatTok{0.012}\NormalTok{, }\AttributeTok{y =} \FunctionTok{max}\NormalTok{(Iteration) }\SpecialCharTok{+} \DecValTok{300}\NormalTok{, }\AttributeTok{label =} \StringTok{"Lower Bound"}\NormalTok{), }\AttributeTok{color =} \StringTok{"red"}\NormalTok{, }\AttributeTok{hjust =} \FloatTok{1.1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_text}\NormalTok{(}\FunctionTok{aes}\NormalTok{(}\AttributeTok{x =}\NormalTok{ upper\_critical\_value }\SpecialCharTok{{-}} \FloatTok{0.012}\NormalTok{, }\AttributeTok{y =} \FunctionTok{max}\NormalTok{(Iteration) }\SpecialCharTok{+} \DecValTok{300}\NormalTok{, }\AttributeTok{label =} \StringTok{"Upper Bound"}\NormalTok{), }\AttributeTok{color =} \StringTok{"red"}\NormalTok{, }\AttributeTok{hjust =} \SpecialCharTok{{-}}\FloatTok{0.1}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{geom\_vline}\NormalTok{(}\AttributeTok{xintercept =}\NormalTok{ bootstrap\_summary}\SpecialCharTok{$}\NormalTok{mean, }\AttributeTok{linetype =} \StringTok{"dashed"}\NormalTok{, }\AttributeTok{color =} \StringTok{"red"}\NormalTok{) }\SpecialCharTok{+} 
+  \FunctionTok{labs}\NormalTok{(}\AttributeTok{title =} \StringTok{"Confidence Intervals of Bootstrap Samples"}\NormalTok{,}
+       \AttributeTok{y =} \StringTok{"Iteration"}\NormalTok{,}
+       \AttributeTok{x =} \StringTok{"Confidence Interval"}\NormalTok{,}
+       \AttributeTok{subtitle =} \StringTok{"Each line segment represents a 95\% confidence interval for a bootstrapped sample"}\NormalTok{) }\SpecialCharTok{+}
+  \FunctionTok{theme\_minimal}\NormalTok{() }\SpecialCharTok{+}
+  \FunctionTok{theme}\NormalTok{(}\AttributeTok{plot.title =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{),}
+        \AttributeTok{plot.subtitle =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \FloatTok{0.5}\NormalTok{, }\AttributeTok{size =} \DecValTok{10}\NormalTok{),}
+        \AttributeTok{axis.text.y =} \FunctionTok{element\_text}\NormalTok{(}\AttributeTok{hjust =} \DecValTok{1}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{Writeup_files/figure-latex/unnamed-chunk-7-1.pdf}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{p\_val }\OtherTok{\textless{}{-}} \FunctionTok{pnorm}\NormalTok{(}\FloatTok{0.3}\NormalTok{, }\AttributeTok{mean =}\NormalTok{ bootstrap\_summary}\SpecialCharTok{$}\NormalTok{mean, }\AttributeTok{sd =}\NormalTok{ bootstrap\_summary}\SpecialCharTok{$}\NormalTok{sd, }\AttributeTok{lower.tail =}\NormalTok{ T)}
+
+\NormalTok{emp\_p\_val }\OtherTok{\textless{}{-}} \FunctionTok{length}\NormalTok{(bootstrap\_df[bootstrap\_df}\SpecialCharTok{$}\NormalTok{psi }\SpecialCharTok{\textless{}=} \FloatTok{0.3}\NormalTok{])}\SpecialCharTok{/}\FunctionTok{length}\NormalTok{(bootstrap\_df}\SpecialCharTok{$}\NormalTok{psi)}
+
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Estimated p{-}value:"}\NormalTok{, emp\_p\_val, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Estimated p-value: 0
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\FunctionTok{cat}\NormalTok{(}\StringTok{"Empirical p{-}value:"}\NormalTok{, emp\_p\_val, }\StringTok{"}\SpecialCharTok{\textbackslash{}n}\StringTok{"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Empirical p-value: 0
+\end{verbatim}
+
+\end{document}
