@@ -32,14 +32,14 @@ The COVID-19 pandemic has impacted millions globally, since the World Health Org
 
 In December 2020, Pfizer and BioNTech received FDA Emergency Use Authorization for their two-dose BNT162b2 COVID-19 mRNA vaccine. The approval was based on a placebo-controlled, observer-blinded study involving participants aged 16 and older who were randomly assigned to receive either the placebo or the vaccine. The data provided leverage to prove that the BNT162b2 vaccine efficacy exceeds the FDA-required efficacy of 30%.[@COVIDpaper].
 
- Given the FDA's minimum efficacy requirement of 30%, this paper focuses on the statistical analysis of the vaccine's efficacy. We will utilize hypothesis testing, bootstrapping, and maximum likelihood estimation to evaluate the data. The thoroughness of this analysis is essential for ensuring reliable and valid findings, which will guide public health decisions based on robust evidence.
+Given the FDA's minimum efficacy requirement of 30%, this paper focuses on the statistical analysis of the vaccine's efficacy. We will utilize hypothesis testing, bootstrapping, and maximum likelihood estimation to evaluate the data. The thoroughness of this analysis is essential for ensuring reliable and valid findings, which will guide public health decisions based on robust evidence.
 
 
 # Statistical Methods
 
 The data for positive and negative tests between the placebo and vaccine groups is taken from the previous research on the vaccine efficacy [@COVIDpaper]:
 
-\begin{table}[ht]
+\begin{table}[h]
     \centering
     \begin{tabular}{c|p{1in}|p{1in}|p{1in}}
     Test & Positive & Negative & Total \\ \hline
@@ -48,12 +48,28 @@ The data for positive and negative tests between the placebo and vaccine groups 
     Total & 170 & 34752 & 34922 \\ \hline
     \end{tabular}
 \end{table}
-        
+
+\newpage
+
+While this is a rather simple dataset, we can use a stacked bar plot to better visualize it:
+
+```{r stacked barplot, echo = FALSE}
+data <- read.csv("data.csv")
+data_melted <- melt(data, id.vars = "Test")
+
+ggplot(data_melted, aes(x = Test, y = value, fill = variable)) +
+  geom_bar(stat = "identity") +
+  geom_text(aes(label = value), 
+            position = position_stack(vjust = 0.5)) +
+  labs(x = "Test", y = "Number of Participants", 
+       title = "COVID Infection for Vaccine and Placebo Groups") 
+```
+
 We denote the random variable $T$ as the number of vaccinated individuals from the 170 COVID cases.
 
 \[ T \sim Binom(n = 170,\pi) \]
 
-We can define $\pi = \textrm{P(Vaccine|COVID)} = \frac{\pi_1}{\pi_1 + \pi_2}$, given that the sample sizes for the vaccine and placebo groups are approximately equal. Here, $\pi_1$ is the proportion of vaccinated individuals who got COVID and $\pi_2$ is the proportion of unvaccinated individuals who got COVID. Moreover, we define the vaccine efficacy as $\psi = \frac{1-2\pi}{1-\pi}$ [@errorstatistics]. We can then formulate the following hypothesis test:
+We can define $\pi = \textrm{P(Vaccine|COVID)} = \frac{\pi_1}{\pi_1 + \pi_2}$, given that the sample sizes for the vaccine and placebo groups are approximately equal. Here, $\pi_1$ is the proportion of vaccinated individuals who got COVID and $\pi_2$ is the proportion of unvaccinated individuals who got COVID. Moreover, we define the vaccine efficacy as $\psi = \frac{1-2\pi}{1-\pi}$ [@errorstatistics]. We can then formulate the following hypothesis test based on the FDA's suggested efficacy of at least 30%:
 
 \[ H_0: \psi_0 = 0.3 \]
 \[ H_1: \psi_0 \geq 0.3 \]
@@ -129,7 +145,7 @@ In summary, the results from the bootstrap analysis strongly support the conclus
 
 # Conclusion
 
-In conclusion, we can say with great confidence that the Pfizer-BioNTech BNT162b2 COVID-19 vaccine is effective at preventing positive tests of the disease, as the vaccine efficacy is much greater than the FDA target value of 30%. With `r round(100 * (77 / 81), 2)`% efficacy (based off of the maxmimum likelihood estimator for our binomial distribution of positive tests), this COVID-19 vaccine should be recommend for general use for disease prevention. We conducted a variety of statistical testing to back up this claim, such as the likelihood ratio test and boostrapped efficacy paramters, which both netted extremely small P-values as well as tight confidence intervals around the estimate for the vaccine efficacy. Our results match the findings of other research on this vaccine's efficacy, where Bayesian estimates were used to show that the vaccine is sufficiently effective [@COVIDpaper]. Next steps for this research would be to utilize more estimators to reach this conclusion, such as the method of moments estimator as well as to corroborate the previous research using Bayesian methods. Other next steps would be to use these methods to identify vaccine efficacy in vaccines for other diseases, especially newly developed ones.
+In conclusion, we can say with great confidence that the Pfizer-BioNTech BNT162b2 COVID-19 vaccine is effective at preventing positive tests of the disease, as the vaccine efficacy is much greater than the FDA target value of 30%. With `r round(100 * (77 / 81), 2)`% efficacy (based off of the maxmimum likelihood estimator for our binomial distribution of positive tests), this COVID-19 vaccine should be recommend for general use for disease prevention. We conducted a variety of statistical testing to back up this claim, such as the likelihood ratio test and boostrapped efficacy paramters, which both netted extremely small P-values as well as tight confidence intervals around the estimate for the vaccine efficacy. Our results match the findings of other research on this vaccine's efficacy, where Bayesian estimates were used to show that the vaccine is sufficiently effective [@COVIDpaper]. Next steps for this research would be to utilize more estimators to reach this conclusion, such as the method of moments estimator as well as to corroborate the previous research using Bayesian methods, such as the Beta Binomial model [@BetaBinomial]. Other next steps would be to use these methods to identify vaccine efficacy in vaccines for other diseases, especially newly developed ones.
 
 # References
 
@@ -144,9 +160,9 @@ data <- read.csv("data.csv")
 data_melted <- melt(data, id.vars = "Test")
 ```
 
-### Stacked Barplot
+### Stacked Barplot Code
 
-```{r stacked barplot, echo = TRUE}
+```{r stacked barplot code, fig.show = "hide"}
 ggplot(data_melted, aes(x = Test, y = value, fill = variable)) +
   geom_bar(stat = "identity") +
   geom_text(aes(label = value), 
@@ -154,7 +170,6 @@ ggplot(data_melted, aes(x = Test, y = value, fill = variable)) +
   labs(x = "Test", y = "Number of Participants", 
        title = "COVID Infection for Vaccine and Placebo Groups") 
 ```
-
 
 ## Newton Rhapson MLE Approximation
 
@@ -204,6 +219,10 @@ The calculated confidence interval is [0.9155, 0.9856] with a standard error of 
 ```{r}
 
 data <- read_csv("data.csv", show_col_types = F)
+
+library(boot)
+library(readr)
+library(tidyverse)
 
 ```
 
@@ -264,16 +283,29 @@ upper_critical_value <- bootstrap_summary$upper_critical_value
 bootstrap_summary
 
 ```
+
+
 ```{r}
 
 ggplot(bootstrap_df, aes(x = psi)) +
-  geom_histogram(binwidth = 0.007, fill = "mediumpurple", color = "black") +
-  labs(title = "Histogram of Bootstrap Psi Values", x = "Psi", y = "Frequency") +
+  geom_histogram(aes(y = after_stat(density)), 
+                 bins = round(log(length(bootstrap_df$psi), base = 2)), 
+                 fill = "mediumpurple", 
+                 color = "black") +
+  labs(title = "Histogram of Bootstrap Psi Values", x = "Psi") +
   theme_minimal() +
-  geom_vline(xintercept = observed_psi, linetype = "solid", color = "red") + 
-  geom_vline(xintercept = bootstrap_summary$upper_critical_value, linetype = "dashed", color = "red") + 
-  geom_vline(xintercept = bootstrap_summary$lower_critical_value, linetype = "dashed", color = "red") + 
-  theme(plot.title = element_text(hjust = 0.5))
+  geom_vline(xintercept = observed_psi, 
+             linetype = "solid", 
+             color = "red") + 
+  geom_vline(xintercept = bootstrap_summary$upper_critical_value, 
+             linetype = "dashed", 
+             color = "red") + 
+  geom_vline(xintercept = bootstrap_summary$lower_critical_value, 
+             linetype = "dashed", 
+             color = "red") + 
+  scale_y_continuous(labels = scales::number_format(accuracy = 0.1)) +
+  theme(plot.title = element_text(hjust = 0.5)) +
+  stat_function(fun = dnorm, args = list(mean = bootstrap_summary$mean, sd = bootstrap_summary$sd), color = "blue", size = 1)
 
 ```
 
@@ -320,10 +352,12 @@ ggplot(plot_data, aes(y = Iteration)) +
 
 ```{r}
 
-p_val <- pnorm(0.3, mean = bootstrap_summary$mean, sd = bootstrap_summary$sd, lower.tail = F)
+p_val <- pnorm(0.3, mean = bootstrap_summary$mean, sd = bootstrap_summary$sd, lower.tail = T)
 
-1 - p_val
+emp_p_val <- length(bootstrap_df[bootstrap_df$psi <= 0.3])/length(bootstrap_df$psi)
 
-1 - p_val < 0.05
+cat("Estimated p-value:", emp_p_val, "\n")
+
+cat("Empirical p-value:", emp_p_val, "\n")
 
 ```
