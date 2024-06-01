@@ -84,7 +84,7 @@ bootstrap_summary
 
 ```{r}
 
-ggplot(bootstrap_df, aes(x = psi)) +
+plot_1 <- ggplot(bootstrap_df, aes(x = psi)) +
   geom_histogram(aes(y = after_stat(density)), 
                  bins = round(log(length(bootstrap_df$psi), base = 2)), 
                  fill = "mediumpurple", 
@@ -103,6 +103,8 @@ ggplot(bootstrap_df, aes(x = psi)) +
   scale_y_continuous(labels = scales::number_format(accuracy = 0.1)) +
   theme(plot.title = element_text(hjust = 0.5)) +
   stat_function(fun = dnorm, args = list(mean = bootstrap_summary$mean, sd = bootstrap_summary$sd), color = "blue", size = 1)
+
+ggsave("Histogram_of_Bootstrap_Psi_Values.png", plot = plot_1, width = 10, height = 6)
 
 ```
 
@@ -128,7 +130,7 @@ for (i in 1:n_bootstrap) {
 
 plot_data <- ci_data[seq(1, n_bootstrap, by = 150), ]
 
-ggplot(plot_data, aes(y = Iteration)) +
+plot_2 <- ggplot(plot_data, aes(y = Iteration)) +
   geom_segment(aes(yend = Iteration, x = Lower, xend = Upper), color = "navy") +
   geom_point(aes(y = Iteration, x = Mean), color = "navy")+
   geom_vline(xintercept = lower_critical_value, linetype = "dashed", color = "red") +
@@ -144,6 +146,8 @@ ggplot(plot_data, aes(y = Iteration)) +
   theme(plot.title = element_text(hjust = 0.5),
         plot.subtitle = element_text(hjust = 0.5, size = 10),
         axis.text.y = element_text(hjust = 1))
+
+ggsave("Segmented_Bar_Plot.png", plot = plot_2, width = 10, height = 6)
 
 ```
 

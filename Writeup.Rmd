@@ -5,6 +5,8 @@ subtitle: "Spring 2024"
 header-includes:
     - \usepackage{amsmath}
     - \usepackage{amsthm}
+    - \usepackage{setspace}
+    - \doublespacing
 bibliography: refs.bib
 nocite: '@*'
 fontsize: 11pt
@@ -162,14 +164,18 @@ Furthermore, the vaccine efficacy ($\psi$) for the BNT162b2 vaccine was estimate
 
 The bootstrap resampling provided a distribution of $\psi$ values, from which the mean efficacy was estimated to be 0.9508 with a standard deviation of 0.0178. The 95\% confidence interval for the vaccine efficacy, derived from the bootstrap samples, ranged from approximately 91.59\% to 98.58\%. This confidence interval is quite narrow, indicating a high level of precision in the efficacy estimate.
 
-The histogram of the bootstrap $\psi$ values, along with the confidence intervals, confirms that the estimated efficacy is consistently around 95\%, supporting the robustness of the estimate. Furthermore, the probability that the vaccine efficacy exceeds 30\% is 1, with the calculated p-value being effectively zero ($3.74 \times 10^{-292}$). This overwhelming evidence suggests that the vaccine significantly reduces the risk of infection compared to the placebo.
+![Histogram of Bootstrap Psi Values](Histogram_of_Bootstrap_Psi_Values.png)
+
+The histogram of the bootstrap $\psi$ values, along with the confidence intervals, confirms that the estimated efficacy is consistently around 95\%, supporting the robustness of the estimate. Furthermore, the probability that the vaccine efficacy exceeds 30\% is 1, with the calculated p-value being effectively zero ($2.6 \times 10^{-285}$). This overwhelming evidence suggests that the vaccine significantly reduces the risk of infection compared to the placebo.
+
+![Segmented Bar Plot of Bootstrapped Confidence Intervals](Segmented_Bar_Plot.png)
 
 In summary, the results from the bootstrap analysis strongly support the conclusion that the BNT162b2 vaccine is highly effective, with an estimated efficacy of around 95\%. The narrow confidence interval and extremely low p-value reinforce the reliability and significance of the vaccine's protective effect against COVID-19.
 
 
 # Conclusion
 
-In conclusion, we can say with great confidence that the Pfizer-BioNTech BNT162b2 COVID-19 vaccine is effective at preventing positive tests of the disease, as the vaccine efficacy is much greater than the FDA target value of 30%. With `r round(100 * (77 / 81), 2)`% efficacy (based off of the maxmimum likelihood estimator for our binomial distribution of positive tests), this COVID-19 vaccine should be recommend for general use for disease prevention. We conducted a variety of statistical testing to back up this claim, such as the likelihood ratio test and boostrapped efficacy paramters, which both netted extremely small P-values as well as tight confidence intervals around the estimate for the vaccine efficacy. Our results match the findings of other research on this vaccine's efficacy, where Bayesian estimates were used to show that the vaccine is sufficiently effective [@COVIDpaper]. Next steps for this research would be to utilize more estimators to reach this conclusion, such as the method of moments estimator as well as to corroborate the previous research using Bayesian methods, such as the Beta Binomial model [@BetaBinomial]. Other next steps would be to use these methods to identify vaccine efficacy in vaccines for other diseases, especially newly developed ones.
+In conclusion, we can say with great confidence that the Pfizer-BioNTech BNT162b2 COVID-19 vaccine is effective at preventing positive tests of the disease, as the vaccine efficacy is much greater than the FDA target value of 30%. With `r round(100 * (77 / 81), 2)`% efficacy (based off of the maxmimum likelihood estimator for our binomial distribution of positive tests), this COVID-19 vaccine should be recommend for general use for disease prevention. We conducted a variety of statistical testing to back up this claim, such as the likelihood ratio test and boostrapped efficacy paramters, which both netted extremely small P-values as well as tight confidence intervals around the estimate for the vaccine efficacy. Our results match the findings of other research on this vaccine's efficacy, where Bayesian estimates were used to show that the vaccine is sufficiently effective [@COVIDpaper]. Next steps for this research would be to utilize more estimators to reach this conclusion, such as the method of moments estimator as well as to corroborate the previous research using Bayesian methods, such as the Beta Binomial model. Other next steps would be to use these methods to identify vaccine efficacy in vaccines for other diseases, especially newly developed ones.
 
 # References
 
@@ -267,7 +273,6 @@ observed_psi <- (1 - 2*observed_pi)/(1 - observed_pi)
 
 ```
 
-
 ```{r}
 
 n_bootstrap <- 10000
@@ -288,8 +293,6 @@ for (i in 1:n_bootstrap) {
 
 ```
 
-
-
 ```{r}
 
 bootstrap_df <- data.frame(psi = bootstrap_psis)
@@ -308,79 +311,13 @@ bootstrap_summary
 
 ```
 
-
-```{r}
-
-ggplot(bootstrap_df, aes(x = psi)) +
-  geom_histogram(aes(y = after_stat(density)), 
-                 bins = round(log(length(bootstrap_df$psi), base = 2)), 
-                 fill = "mediumpurple", 
-                 color = "black") +
-  labs(title = "Histogram of Bootstrap Psi Values", x = "Psi") +
-  theme_minimal() +
-  geom_vline(xintercept = observed_psi, 
-             linetype = "solid", 
-             color = "red") + 
-  geom_vline(xintercept = bootstrap_summary$upper_critical_value, 
-             linetype = "dashed", 
-             color = "red") + 
-  geom_vline(xintercept = bootstrap_summary$lower_critical_value, 
-             linetype = "dashed", 
-             color = "red") + 
-  scale_y_continuous(labels = scales::number_format(accuracy = 0.1)) +
-  theme(plot.title = element_text(hjust = 0.5)) +
-  stat_function(fun = dnorm, args = list(mean = bootstrap_summary$mean, sd = bootstrap_summary$sd), color = "blue", size = 1)
-
-```
-
-```{r}
-
-ci_data <- data.frame(
-  Iteration = 1:n_bootstrap,
-  Lower = numeric(n_bootstrap),
-  Upper = numeric(n_bootstrap)
-)
-
-for (i in 1:n_bootstrap) {
-  sample_psis <- sample(bootstrap_psis, n_bootstrap, replace = TRUE)
-  ci_data$Lower[i] <- mean(sample_psis) - qnorm(0.975)*sd(sample_psis)
-  ci_data$Upper[i] <- mean(sample_psis) + qnorm(0.975)*sd(sample_psis)
-  ci_data$Mean[i] <- mean(sample_psis)
-}
-
-```
-
-
-```{r}
-
-plot_data <- ci_data[seq(1, n_bootstrap, by = 150), ]
-
-ggplot(plot_data, aes(y = Iteration)) +
-  geom_segment(aes(yend = Iteration, x = Lower, xend = Upper), color = "navy") +
-  geom_point(aes(y = Iteration, x = Mean), color = "navy")+
-  geom_vline(xintercept = lower_critical_value, linetype = "dashed", color = "red") +
-  geom_vline(xintercept = upper_critical_value, linetype = "dashed", color = "red") +
-  geom_text(aes(x = lower_critical_value + 0.012, y = max(Iteration) + 300, label = "Lower Bound"), color = "red", hjust = 1.1) +
-  geom_text(aes(x = upper_critical_value - 0.012, y = max(Iteration) + 300, label = "Upper Bound"), color = "red", hjust = -0.1) +
-  geom_vline(xintercept = bootstrap_summary$mean, linetype = "dashed", color = "red") + 
-  labs(title = "Confidence Intervals of Bootstrap Samples",
-       y = "Iteration",
-       x = "Confidence Interval",
-       subtitle = "Each line segment represents a 95% confidence interval for a bootstrapped sample") +
-  theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5),
-        plot.subtitle = element_text(hjust = 0.5, size = 10),
-        axis.text.y = element_text(hjust = 1))
-```
-
-
 ```{r}
 
 p_val <- pnorm(0.3, mean = bootstrap_summary$mean, sd = bootstrap_summary$sd, lower.tail = T)
 
 emp_p_val <- length(bootstrap_df[bootstrap_df$psi <= 0.3])/length(bootstrap_df$psi)
 
-cat("Estimated p-value:", emp_p_val, "\n")
+cat("Estimated p-value:", p_val, "\n")
 
 cat("Empirical p-value:", emp_p_val, "\n")
 
