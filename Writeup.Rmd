@@ -22,7 +22,7 @@ library(fastR2)
 
 # Abstract
 
-The COVID-19 pandemic,  necessitated the development of effective vaccines to mitigate severe health outcomes. This study evaluates the efficacy of the Pfizer-BioNTech BNT162b2 mRNA vaccine,  using statistical methods such as maximum likelihood estimation (MLE), likelihood ratio tests, and bootstrapping. Analyzing data from a placebo-controlled study with 170 COVID-19 cases, we estimated the vaccine efficacy to be approximately 95%, significantly surpassing the FDA's minimum efficacy requirement of 30%. The MLE provided an efficacy estimate of 0.9506, with a 95% confidence interval ranging from 91.55% to 98.57%. Bootstrapping with 10,000 iterations confirmed the robustness of this estimate, yielding similar results. Our findings, demonstrate the vaccine's high effectiveness in preventing COVID-19.
+The COVID-19 pandemic necessitated the development of effective vaccines to mitigate severe health outcomes. This study evaluates the efficacy of the Pfizer-BioNTech BNT162b2 mRNA vaccine using statistical methods such as maximum likelihood estimation (MLE), likelihood ratio tests, and bootstrapping. Analyzing data from a placebo-controlled study with 170 COVID-19 cases, we estimated the vaccine efficacy to be approximately 95%, significantly surpassing the FDA's minimum efficacy requirement of 30%. The MLE provided an efficacy estimate of 0.9506, with a 95% confidence interval ranging from 91.55% to 98.57%. Bootstrapping with 10,000 iterations confirmed the robustness of this estimate, yielding similar results with P-values equal to zero. Our findings demonstrate the vaccine's high effectiveness in preventing COVID-19.
 
 # Keywords
 
@@ -50,8 +50,6 @@ The data for positive and negative tests between the placebo and vaccine groups 
     Total & 170 & 34752 & 34922 \\ \hline
     \end{tabular}
 \end{table}
-
-\newpage
 
 While this is a rather simple dataset, we can use a stacked bar plot to better visualize it:
 
@@ -121,25 +119,25 @@ In our analysis, bootstrapping is applied to estimate the efficacy of the BNT162
 
 In this analysis, we conducted a bootstrap resampling procedure to evaluate the distribution of the psi values, a derived statistic from the proportions of COVID cases in vaccine and placebo groups. The bootstrap technique involves repeatedly sampling with replacement from the original data to create numerous simulated samples. This method helps in estimating the sampling distribution of the statistic of interest and provides insights into its variability and confidence intervals.
 
-The proportions of COVID cases in each group (\texttt{prop\_vaccine} and \texttt{prop\_placebo}) were calculated using the provided data. 
+The proportions of COVID cases in each group `prop_vaccine` and `prop_placebo` were calculated using the provided data. 
 
-$$\text{Observed }\pi = \frac{\text{Observed }\pi_1}{\text{Observed }\pi_1 + \text{Observed }\pi_2}$$
+\[ \textrm{Observed }\pi = \frac{\textrm{Observed }\pi_1}{\textrm{Observed }\pi_1 + \textrm{Observed }\pi_2} \]
 
 Using these proportions, the observed psi value was computed using the formula:
 
-$$\text{Observed } \psi = \frac{1 - 2 \times \text{Observed } \pi}{1 - \text{Observed } \pi}$$
+\[ \textrm{Observed } \psi = \frac{1 - 2 \cdot \textrm{Observed } \pi}{1 - \textrm{Observed } \pi} \]
 
-where $\text{observed_pi}$ is the proportion of COVID cases in the vaccine group relative to the combined total of COVID cases in both groups.
+Where `observed_pi` (the variable in R) is the proportion of COVID cases in the vaccine group relative to the combined total of COVID cases in both groups.
 
-A total of 10,000 bootstrap samples were generated. For each iteration, random samples were drawn with replacement from the \texttt{vaccine} and \texttt{placebo} groups based on their respective proportions. The bootstrap psi value was then calculated for each resampled dataset. This process generated a distribution of psi values, stored in \texttt{bootstrap\_df}.
+A total of 10,000 bootstrap samples were generated. For each iteration, random samples were drawn with replacement from the `vaccine` and `placebo` groups based on their respective proportions. The bootstrap psi value was then calculated for each resampled dataset. This process generated a distribution of psi values, stored in `bootstrap_df`.
 
-The summary statistics of the bootstrap distribution, including the mean, standard deviation, and 95\% confidence intervals, were calculated. The critical values for the confidence intervals were determined using the quantiles of the normal distribution:
+The summary statistics of the bootstrap distribution, including the mean, standard deviation, and 95% confidence intervals, were calculated. The critical values for the confidence intervals were determined using the quantiles of the normal distribution:
 
 $$\text{Lower critical value} = E[\psi]- Z_{0.975} \times SD[\psi]$$
 
 $$\text{Upper critical value} = E[\psi] + Z_{0.975} \times SD[\psi]$$
 
-The analysis involved calculating the proportions of COVID cases (\(\pi\)), deriving psi values from these proportions, and using the bootstrap method to generate 10,000 samples. This allowed for estimation of the mean, standard deviation, and 95\% confidence intervals of the psi values.
+The analysis involved calculating the proportions of COVID cases $(\pi)$, deriving psi values from these proportions, and using the bootstrap method to generate 10,000 samples. This allowed for estimation of the mean, standard deviation, and 95% confidence intervals of the psi values.
 
 
 # Results
