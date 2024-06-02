@@ -41,6 +41,8 @@ Given the FDA's minimum efficacy requirement of 30%, this paper focuses on the s
 
 # Statistical Methods
 
+In vaccine efficacy studies, the null hypothesis often assumes the vaccine has minimal protective effect, typically set at 30%. Vaccine efficacy measures how much the vaccine reduces the disease incidence compared to a placebo. Researchers compare the disease rates in vaccinated and placebo groups. If the vaccine significantly reduces the disease rate beyond the 30% threshold, the null hypothesis is rejected, indicating the vaccine is highly effective. This efficacy is confirmed statistically by calculating confidence intervals. If these intervals show efficacy consistently above 30%, it proves the vaccine's significant protective effect.
+
 The data for positive and negative tests between the placebo and vaccine groups is taken from the previous research on the vaccine efficacy [@COVIDpaper]:
 
 \begin{table}[h]
@@ -76,7 +78,7 @@ We can define $\pi = \textrm{P(Vaccine|COVID)} = \frac{\pi_1}{\pi_1 + \pi_2}$, g
 \[ H_0: \psi_0 = 0.3 \]
 \[ H_1: \psi_0 \geq 0.3 \]
 
-We will use a maximum likelihood estimator to conduct a likelihood ratio test as well as bootstrapped confidence intervals to test our hypothesis.
+We will use a maximum likelihood estimator to conduct a likelihood ratio test as well as a bootstrapped confidence interval to test our hypothesis.
 
 ## Maximum Likelihood Estimator
 
@@ -171,7 +173,6 @@ The histogram of the bootstrap $\psi$ values, along with the confidence interval
 ![Segmented Bar Plot of Bootstrapped Confidence Intervals](Segmented_Bar_Plot.png)
 
 In summary, the results from the bootstrap analysis strongly support the conclusion that the BNT162b2 vaccine is highly effective, with an estimated efficacy of around 95\%. The narrow confidence interval and extremely low p-value reinforce the reliability and significance of the vaccine's protective effect against COVID-19.
-
 
 # Conclusion
 
