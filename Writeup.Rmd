@@ -281,8 +281,15 @@ bootstrap_psis <- numeric(n_bootstrap)
 set.seed(123)
 
 for (i in 1:n_bootstrap) {
-  vaccine_sample <- sample(c(0, 1), size = vaccine$COVID + vaccine$No_COVID, replace = TRUE, prob = c(1 - prop_vaccine, prop_vaccine))
-  placebo_sample <- sample(c(0, 1), size = placebo$COVID + placebo$No_COVID, replace = TRUE, prob = c(1 - prop_placebo, prop_placebo))
+  vaccine_sample <- sample(c(0, 1), 
+                           size = vaccine$COVID + vaccine$No_COVID, 
+                           replace = TRUE, 
+                           prob = c(1 - prop_vaccine, prop_vaccine))
+  
+  placebo_sample <- sample(c(0, 1), 
+                           size = placebo$COVID + placebo$No_COVID, 
+                           replace = TRUE, 
+                           prob = c(1 - prop_placebo, prop_placebo))
   
   prop_vaccine_boot <- mean(vaccine_sample)
   prop_placebo_boot <- mean(placebo_sample)
@@ -314,9 +321,13 @@ bootstrap_summary
 
 ```{r}
 
-p_val <- pnorm(0.3, mean = bootstrap_summary$mean, sd = bootstrap_summary$sd, lower.tail = T)
+p_val <- pnorm(0.3,
+               mean = bootstrap_summary$mean, 
+               sd = bootstrap_summary$sd, 
+               lower.tail = T)
 
-emp_p_val <- length(bootstrap_df[bootstrap_df$psi <= 0.3])/length(bootstrap_df$psi)
+emp_p_val <- 
+  length(bootstrap_df[bootstrap_df$psi <= 0.3])/length(bootstrap_df$psi)
 
 cat("Estimated p-value:", p_val, "\n")
 
